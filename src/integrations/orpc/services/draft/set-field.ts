@@ -82,11 +82,7 @@ export const applySetFieldOperation = (draft: DraftData, operation: SetFieldOper
  * @param title - The new section title.
  * @returns The updated draft payload.
  */
-const updateSectionTitle = (
-	draft: DraftData,
-	section: keyof DraftData["sections"],
-	title: string,
-): DraftData => ({
+const updateSectionTitle = (draft: DraftData, section: keyof DraftData["sections"], title: string): DraftData => ({
 	...draft,
 	sections: {
 		...draft.sections,

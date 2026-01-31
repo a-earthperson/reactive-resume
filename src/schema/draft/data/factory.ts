@@ -120,7 +120,14 @@ const sectionItemFactories: { [K in SectionKey]: (id: string) => DraftData["sect
 	awards: (id) => ({ id, title: "", awarder: "", date: "", website: createEmptyLabeledUrl(), description: "" }),
 	certifications: (id) => ({ id, title: "", issuer: "", date: "", website: createEmptyLabeledUrl(), description: "" }),
 	publications: (id) => ({ id, title: "", publisher: "", date: "", website: createEmptyLabeledUrl(), description: "" }),
-	volunteer: (id) => ({ id, organization: "", location: "", period: "", website: createEmptyLabeledUrl(), description: "" }),
+	volunteer: (id) => ({
+		id,
+		organization: "",
+		location: "",
+		period: "",
+		website: createEmptyLabeledUrl(),
+		description: "",
+	}),
 	references: (id) => ({ id, name: "", position: "", website: createEmptyLabeledUrl(), phone: "", description: "" }),
 };
 

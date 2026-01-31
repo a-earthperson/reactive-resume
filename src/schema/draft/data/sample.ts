@@ -113,8 +113,7 @@ export const sampleDraftData: DraftData = {
 						label: "princeton.edu",
 						url: "https://www.princeton.edu",
 					},
-					description:
-						"Taught and conducted research in mathematical physics and logic prior to joining the IAS.",
+					description: "Taught and conducted research in mathematical physics and logic prior to joining the IAS.",
 				},
 			],
 		},
@@ -147,8 +146,7 @@ export const sampleDraftData: DraftData = {
 						label: "ETH Zurich",
 						url: "https://ethz.ch/en.html",
 					},
-					description:
-						"Completed engineering degree while pursuing advanced mathematics and physics coursework.",
+					description: "Completed engineering degree while pursuing advanced mathematics and physics coursework.",
 				},
 			],
 		},
@@ -175,8 +173,7 @@ export const sampleDraftData: DraftData = {
 						label: "Wikipedia",
 						url: "https://en.wikipedia.org/wiki/Monte_Carlo_method",
 					},
-					description:
-						"Pioneered stochastic simulation techniques for complex physical and mathematical systems.",
+					description: "Pioneered stochastic simulation techniques for complex physical and mathematical systems.",
 				},
 				{
 					id: "proj-von-neumann",
@@ -295,8 +292,7 @@ export const sampleDraftData: DraftData = {
 						label: "Wikipedia",
 						url: "https://en.wikipedia.org/wiki/Medal_for_Merit_(United_States)",
 					},
-					description:
-						"Awarded for exceptionally meritorious conduct in the performance of outstanding services.",
+					description: "Awarded for exceptionally meritorious conduct in the performance of outstanding services.",
 				},
 			],
 		},
@@ -316,8 +312,7 @@ export const sampleDraftData: DraftData = {
 						label: "Wikipedia",
 						url: "https://en.wikipedia.org/wiki/Theory_of_Games_and_Economic_Behavior",
 					},
-					description:
-						"Co-authored with Oskar Morgenstern; established the mathematical foundations of game theory.",
+					description: "Co-authored with Oskar Morgenstern; established the mathematical foundations of game theory.",
 				},
 				{
 					id: "pub-quantum",
@@ -328,8 +323,7 @@ export const sampleDraftData: DraftData = {
 						label: "Wikipedia",
 						url: "https://en.wikipedia.org/wiki/Mathematical_Foundations_of_Quantum_Mechanics",
 					},
-					description:
-						"Formalized the Hilbert space framework for quantum mechanics and operator theory.",
+					description: "Formalized the Hilbert space framework for quantum mechanics and operator theory.",
 				},
 				{
 					id: "pub-computer-brain",
@@ -340,8 +334,7 @@ export const sampleDraftData: DraftData = {
 						label: "Wikipedia",
 						url: "https://en.wikipedia.org/wiki/The_Computer_and_the_Brain",
 					},
-					description:
-						"Posthumous work comparing digital computation with biological neural systems.",
+					description: "Posthumous work comparing digital computation with biological neural systems.",
 				},
 			],
 		},
@@ -357,8 +350,7 @@ export const sampleDraftData: DraftData = {
 						label: "Wikipedia",
 						url: "https://en.wikipedia.org/wiki/Atomic_Energy_Commission",
 					},
-					description:
-						"Served on advisory committee on nuclear policy, reactor development, and national security.",
+					description: "Served on advisory committee on nuclear policy, reactor development, and national security.",
 				},
 			],
 		},
@@ -401,7 +393,6 @@ export const sampleDraftData: DraftData = {
 		},
 	],
 	metadata: {
-		notes:
-			"Draft profile for historical figure; contact fields are intentionally left blank where unknown.",
+		notes: "Draft profile for historical figure; contact fields are intentionally left blank where unknown.",
 	},
 };

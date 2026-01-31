@@ -10,7 +10,7 @@ import { PGlite } from "@electric-sql/pglite";
 import { drizzle, type PgliteDatabase } from "drizzle-orm/pglite";
 import { vi } from "vitest";
 import { schema } from "@/integrations/drizzle";
-import { draftFactory, type DraftData } from "@/schema/draft/data";
+import { type DraftData, draftFactory } from "@/schema/draft/data";
 
 let testDb: PgliteDatabase<typeof schema>;
 let client: PGlite;

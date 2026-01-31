@@ -1,4 +1,4 @@
-import { draftFactory, type DraftData } from "@/schema/draft/data";
+import { type DraftData, draftFactory } from "@/schema/draft/data";
 import type { DraftOperation } from "@/schema/draft/operations";
 
 /**

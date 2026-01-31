@@ -105,10 +105,7 @@ describe("applySetFieldOperation", () => {
 			{ op: "setField", path: "sections.references.title", value: "References" },
 		];
 
-		const updated = operations.reduce(
-			(current, operation) => applySetFieldOperation(current, operation),
-			draft,
-		);
+		const updated = operations.reduce((current, operation) => applySetFieldOperation(current, operation), draft);
 
 		expect(updated.picture.url).toBe("https://example.com/photo.jpg");
 		expect(updated.basics.email).toBe("ada@example.com");

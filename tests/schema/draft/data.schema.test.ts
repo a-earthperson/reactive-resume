@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { draftDataSchema, draftFactory, type DraftData, urlValueSchema } from "@/schema/draft/data";
+import { type DraftData, draftDataSchema, draftFactory, urlValueSchema } from "@/schema/draft/data";
 
 /**
  * @remarks

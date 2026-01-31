@@ -10,6 +10,7 @@
  * @see {@link ./item-patch.schema | Patch operations}
  */
 import z from "zod";
+import { itemOpsOperationSchema, setFieldOperationSchema } from "./item-patch.schema";
 import {
 	replaceBasicsOperationSchema,
 	replaceCustomSectionsOperationSchema,
@@ -18,10 +19,9 @@ import {
 	replaceSectionOperationSchema,
 	replaceSummaryOperationSchema,
 } from "./replace.schema";
-import { itemOpsOperationSchema, setFieldOperationSchema } from "./item-patch.schema";
 
-export * from "./replace.schema";
 export * from "./item-patch.schema";
+export * from "./replace.schema";
 
 /**
  * @remarks Union of all supported draft operations.
