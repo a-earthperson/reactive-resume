@@ -1,0 +1,120 @@
+import z from "zod";
+import { draftDataSchema } from "@/schema/draft/data";
+import { protectedProcedure } from "../context";
+import { draftService } from "../services/draft";
+
+/**
+ * @remarks Lists draft identifiers for the authenticated user.
+ * @see draftService.list
+ */
+const listDrafts = protectedProcedure
+	.route({
+		method: "GET",
+		path: "/draft/list",
+		tags: ["Draft"],
+		summary: "List drafts",
+		description: "List all draft records for the authenticated user.",
+	})
+	.output(
+		z.array(
+			z.object({
+				id: z.string(),
+				createdAt: z.date(),
+				updatedAt: z.date(),
+			}),
+		),
+	)
+	.handler(async ({ context }) => {
+		return draftService.list({ userId: context.user.id });
+	});
+
+/**
+ * @remarks Retrieves a draft record by identifier.
+ * @see draftService.getById
+ */
+const getDraftById = protectedProcedure
+	.route({
+		method: "GET",
+		path: "/draft/{id}",
+		tags: ["Draft"],
+		summary: "Get draft by ID",
+		description: "Fetch a draft record, including its data payload, by ID.",
+	})
+	.input(z.object({ id: z.string() }))
+	.output(
+		z.object({
+			id: z.string(),
+			data: draftDataSchema,
+			createdAt: z.date(),
+			updatedAt: z.date(),
+		}),
+	)
+	.handler(async ({ context, input }) => {
+		return draftService.getById({ id: input.id, userId: context.user.id });
+	});
+
+/**
+ * @remarks Creates a draft record for the authenticated user.
+ * @see draftService.create
+ */
+const createDraft = protectedProcedure
+	.route({
+		method: "POST",
+		path: "/draft/create",
+		tags: ["Draft"],
+		summary: "Create draft",
+		description: "Create a draft record with the provided draft data payload.",
+	})
+	.input(z.object({ data: draftDataSchema }))
+	.output(z.string().describe("The ID of the created draft."))
+	.handler(async ({ context, input }) => {
+		return draftService.create({ userId: context.user.id, data: input.data });
+	});
+
+/**
+ * @remarks Replaces the data payload for a draft record.
+ * @see draftService.update
+ */
+const updateDraft = protectedProcedure
+	.route({
+		method: "PUT",
+		path: "/draft/{id}",
+		tags: ["Draft"],
+		summary: "Update draft",
+		description: "Replace the draft data payload for a draft record.",
+	})
+	.input(z.object({ id: z.string(), data: draftDataSchema }))
+	.output(z.void())
+	.handler(async ({ context, input }) => {
+		return draftService.update({ id: input.id, userId: context.user.id, data: input.data });
+	});
+
+/**
+ * @remarks Removes a draft record for the authenticated user.
+ * @see draftService.delete
+ */
+const deleteDraft = protectedProcedure
+	.route({
+		method: "DELETE",
+		path: "/draft/{id}",
+		tags: ["Draft"],
+		summary: "Delete draft",
+		description: "Delete a draft record by ID.",
+	})
+	.input(z.object({ id: z.string() }))
+	.output(z.void())
+	.handler(async ({ context, input }) => {
+		return draftService.delete({ id: input.id, userId: context.user.id });
+	});
+
+/**
+ * @remarks Draft router surface area for basic CRUD endpoints.
+ * @see listDrafts
+ */
+export const draftRouter = {
+	list: listDrafts,
+	getById: getDraftById,
+	create: createDraft,
+	update: updateDraft,
+	delete: deleteDraft,
+};
