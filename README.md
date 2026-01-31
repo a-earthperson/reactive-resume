@@ -17,6 +17,12 @@
     <img src="https://img.shields.io/github/package-json/v/amruthpillai/reactive-resume?style=flat-square" alt="Reactive Resume version">
     <img src="https://img.shields.io/github/stars/amruthpillai/Reactive-Resume?style=flat-square" alt="GitHub Stars">
     <img src="https://img.shields.io/github/license/amruthpillai/Reactive-Resume?style=flat-square" alt="License" />
+    <a href="https://github.com/amruthpillai/reactive-resume/actions/workflows/tests.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/amruthpillai/reactive-resume/tests.yml?style=flat-square&label=Tests" alt="Tests" />
+    </a>
+    <a href="https://github.com/amruthpillai/reactive-resume/actions/workflows/coverage.yml">
+      <img src="https://img.shields.io/github/actions/workflow/status/amruthpillai/reactive-resume/coverage.yml?style=flat-square&label=Coverage" alt="Coverage" />
+    </a>
     <img src="https://img.shields.io/docker/pulls/amruthpillai/reactive-resume?style=flat-square" alt="Docker Pulls" />
     <a href="https://discord.gg/EE8yFqW4"><img src="https://img.shields.io/discord/1173518977851473940?style=flat-square&label=discord" alt="Discord" /></a>
     <a href="https://crowdin.com/project/reactive-resume"><img src="https://badges.crowdin.net/reactive-resume/localized.svg?style=flat-square" alt="Crowdin" /></a>
