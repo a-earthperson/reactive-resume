@@ -118,6 +118,28 @@ const applyDraftOperation = (draft: DraftData, operation: DraftOperation): Draft
 };
 
 /**
+ * @remarks Applies and validates a batch of operations against a base draft payload.
+ * @param base - The draft payload that receives the operation batch.
+ * @param operations - The ordered list of operations to apply.
+ * @returns A validated DraftData payload reflecting the applied operations.
+ * @throws ORPCError - Thrown when operations yield an invalid payload.
+ */
+const applyOperationsToDraft = (base: DraftData, operations: DraftOperation[]): DraftData => {
+	const nextDraft = operations.reduce(applyDraftOperation, base);
+	const validation = draftDataSchema.safeParse(nextDraft);
+
+	if (!validation.success) {
+		throw new ORPCError("DRAFT_INVALID_OPERATION", {
+			status: 400,
+			data: validation.error.issues,
+			message: "Draft operations produced an invalid payload.",
+		});
+	}
+
+	return validation.data;
+};
+
+/**
  * @remarks Provides CRUD operations for Draft Resume data scoped to a user.
  * @see DraftData
  */
@@ -181,6 +203,30 @@ export const draftService = {
 	},
 
 	/**
+	 * @remarks Creates a draft by applying operations to an empty or partially seeded payload.
+	 * @param input - The user identity, optional seed data, and operations to apply.
+	 * @returns The identifier of the newly created draft.
+	 * @throws ORPCError - Thrown when the create payload or operations are invalid.
+	 */
+	createFromOperations: async (input: {
+		userId: string;
+		operations: DraftOperation[];
+		data?: unknown;
+	}): Promise<string> => {
+		const id = generateId();
+		const base = normalizeDraftCreateData(input.data);
+		const data = applyOperationsToDraft(base, input.operations);
+
+		await db.insert(schema.draft).values({
+			id,
+			userId: input.userId,
+			data,
+		});
+
+		return id;
+	},
+
+	/**
 	 * @remarks Updates a draft by replacing its stored data payload.
 	 * @param input - The draft identifier, owner, and new data payload.
 	 * @returns A void promise when the update is complete.
@@ -220,21 +266,11 @@ export const draftService = {
 	 */
 	applyOperations: async (input: { id: string; userId: string; operations: DraftOperation[] }): Promise<void> => {
 		const current = await draftService.getById({ id: input.id, userId: input.userId });
-
-		const nextDraft = input.operations.reduce(applyDraftOperation, current.data);
-		const validation = draftDataSchema.safeParse(nextDraft);
-
-		if (!validation.success) {
-			throw new ORPCError("DRAFT_INVALID_OPERATION", {
-				status: 400,
-				data: validation.error.issues,
-				message: "Draft operations produced an invalid payload.",
-			});
-		}
+		const data = applyOperationsToDraft(current.data, input.operations);
 
 		await db
 			.update(schema.draft)
-			.set({ data: validation.data })
+			.set({ data })
 			.where(and(eq(schema.draft.id, input.id), eq(schema.draft.userId, input.userId)));
 	},
 };

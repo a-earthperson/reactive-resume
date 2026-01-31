@@ -79,6 +79,43 @@ const createDraft = protectedProcedure
 	});
 
 /**
+ * @remarks Creates a draft and applies an operation batch in a single request.
+ * @see draftService.createFromOperations
+ */
+const createDraftFromOperations = protectedProcedure
+	.route({
+		method: "POST",
+		path: "/draft",
+		tags: ["Draft"],
+		summary: "Create draft from operations",
+		description: "Create a draft record and apply an ordered list of operations in one request.",
+	})
+	.input(
+		z.object({
+			operations: draftOperationListSchema,
+			data: z.record(z.string(), z.any()).optional(),
+		}),
+	)
+	.output(z.string().describe("The ID of the created draft."))
+	.errors({
+		DRAFT_INVALID_CREATE: {
+			message: "Draft create payload produced an invalid draft.",
+			status: 400,
+		},
+		DRAFT_INVALID_OPERATION: {
+			message: "Draft operations produced an invalid payload.",
+			status: 400,
+		},
+	})
+	.handler(async ({ context, input }) => {
+		return draftService.createFromOperations({
+			userId: context.user.id,
+			operations: input.operations,
+			data: input.data,
+		});
+	});
+
+/**
  * @remarks Replaces the data payload for a draft record.
  * @see draftService.update
  */
@@ -146,6 +183,7 @@ export const draftRouter = {
 	list: listDrafts,
 	getById: getDraftById,
 	create: createDraft,
+	createFromOperations: createDraftFromOperations,
 	update: updateDraft,
 	applyOperations: applyDraftOperations,
 	delete: deleteDraft,

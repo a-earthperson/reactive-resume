@@ -8,6 +8,7 @@
  */
 import { ORPCError } from "@orpc/client";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import type { DraftOperation } from "@/schema/draft/operations";
 import { draftFactory } from "@/schema/draft/data";
 import {
 	createDraftDataWithDetails,
@@ -290,5 +291,184 @@ describe("draftService.delete", () => {
 		await expect(draftService.delete({ id: draftId, userId: otherUserId })).rejects.toBeInstanceOf(ORPCError);
 		const record = await draftService.getById({ id: draftId, userId: ownerId });
 		expect(record.id).toBe(draftId);
+	});
+});
+
+/**
+ * @remarks
+ * Validates create-from-operations semantics for draft initialization.
+ */
+describe("draftService.createFromOperations", () => {
+	/**
+	 * @remarks
+	 * Creates a draft by applying operations onto the empty baseline.
+	 */
+	it("creates a draft from operations applied to the empty baseline", async () => {
+		const userId = "00000000-0000-0000-0000-000000000040";
+		const operations: DraftOperation[] = [
+			{ op: "setField", path: "basics.name", value: "Ada Lovelace" },
+			{ op: "setField", path: "summary.content", value: "First programmer." },
+			{
+				op: "itemOps",
+				action: "upsert",
+				target: { kind: "section", section: "experience" },
+				items: [{ id: "experience-1", company: "Analytical Engine" }],
+			},
+			{
+				op: "itemOps",
+				action: "upsert",
+				target: { kind: "customField" },
+				items: [{ id: "custom-field-1", text: "Open to collaboration" }],
+			},
+		];
+
+		const draftId = await draftService.createFromOperations({ userId, operations });
+		const record = await draftService.getById({ id: draftId, userId });
+		const experienceItem = record.data.sections.experience.items[0];
+
+		expect(record.data.basics.name).toBe("Ada Lovelace");
+		expect(record.data.basics.headline).toBe("");
+		expect(record.data.summary.content).toBe("First programmer.");
+		expect(record.data.basics.customFields[0]?.link).toBe("");
+		expect(experienceItem?.company).toBe("Analytical Engine");
+		expect(experienceItem?.website.url).toBe("");
+	});
+
+	/**
+	 * @remarks
+	 * Applies operations after merging a partial seed payload.
+	 */
+	it("merges partial seed data and then applies operations", async () => {
+		const userId = "00000000-0000-0000-0000-000000000041";
+		const seedCustomSection = draftFactory.customSections.item.empty("custom-section-1", "projects");
+		seedCustomSection.title = "Highlights";
+
+		const partialPayload: unknown = {
+			basics: {
+				name: "Seed Name",
+				website: { url: "https://seed.example" },
+			},
+			sections: {
+				skills: {
+					title: "Skills",
+				},
+			},
+			customSections: [seedCustomSection],
+		};
+
+		const operations: DraftOperation[] = [
+			{ op: "setField", path: "basics.headline", value: "Computing Pioneer" },
+			{
+				op: "itemOps",
+				action: "upsert",
+				target: { kind: "section", section: "skills" },
+				items: [{ id: "skill-1", name: "Mathematics" }],
+			},
+			{
+				op: "itemOps",
+				action: "upsert",
+				target: { kind: "customSection", sectionId: "custom-section-1" },
+				items: [{ id: "custom-item-1", name: "Project A" }],
+			},
+		];
+
+		const draftId = await draftService.createFromOperations({ userId, data: partialPayload, operations });
+		const record = await draftService.getById({ id: draftId, userId });
+
+		expect(record.data.basics.name).toBe("Seed Name");
+		expect(record.data.basics.headline).toBe("Computing Pioneer");
+		expect(record.data.basics.website.url).toBe("https://seed.example");
+		expect(record.data.basics.website.label).toBe("");
+		expect(record.data.sections.skills.title).toBe("Skills");
+		expect(record.data.sections.skills.items[0]?.name).toBe("Mathematics");
+		expect(record.data.customSections[0]?.items[0]?.id).toBe("custom-item-1");
+	});
+
+	/**
+	 * @remarks
+	 * Ignores itemOps targeting missing custom sections instead of erroring.
+	 */
+	it("no-ops itemOps against missing custom sections", async () => {
+		const userId = "00000000-0000-0000-0000-000000000042";
+		const operations: DraftOperation[] = [
+			{
+				op: "itemOps",
+				action: "upsert",
+				target: { kind: "customSection", sectionId: "missing-section" },
+				items: [{ id: "custom-item-1", name: "Unbound Item" }],
+			},
+		];
+
+		const draftId = await draftService.createFromOperations({ userId, operations });
+		const record = await draftService.getById({ id: draftId, userId });
+
+		expect(record.data.customSections).toHaveLength(0);
+	});
+
+	/**
+	 * @remarks
+	 * Enforces operation validity during create-from-ops flows.
+	 */
+	it("rejects invalid operations during create-from-ops", async () => {
+		const userId = "00000000-0000-0000-0000-000000000043";
+		const invalidOperation = {
+			op: "setField",
+			path: "basics.website.url",
+			value: 123,
+		} as unknown as DraftOperation;
+
+		await expect(
+			draftService.createFromOperations({ userId, operations: [invalidOperation] }),
+		).rejects.toBeInstanceOf(ORPCError);
+	});
+
+	/**
+	 * @remarks
+	 * Enforces seed payload validity before operations are applied.
+	 */
+	it("rejects invalid seed payloads before applying operations", async () => {
+		const userId = "00000000-0000-0000-0000-000000000044";
+		const invalidPayload: unknown = {
+			basics: {
+				website: {
+					url: 123,
+				},
+			},
+		};
+		const operations: DraftOperation[] = [{ op: "setField", path: "basics.name", value: "Ada Lovelace" }];
+
+		await expect(
+			draftService.createFromOperations({ userId, data: invalidPayload, operations }),
+		).rejects.toBeInstanceOf(ORPCError);
+	});
+
+	/**
+	 * @remarks
+	 * Preserves operation ordering during create-from-ops.
+	 */
+	it("applies operations in order during create-from-ops", async () => {
+		const userId = "00000000-0000-0000-0000-000000000045";
+		const operations: DraftOperation[] = [
+			{
+				op: "itemOps",
+				action: "upsert",
+				target: { kind: "section", section: "skills" },
+				items: [{ id: "skill-1", name: "Logic" }],
+			},
+			{
+				op: "replaceSection",
+				section: "skills",
+				data: {
+					title: "Skills",
+					items: [],
+				},
+			},
+		];
+
+		const draftId = await draftService.createFromOperations({ userId, operations });
+		const record = await draftService.getById({ id: draftId, userId });
+
+		expect(record.data.sections.skills.items).toHaveLength(0);
+		expect(record.data.sections.skills.title).toBe("Skills");
 	});
 });
