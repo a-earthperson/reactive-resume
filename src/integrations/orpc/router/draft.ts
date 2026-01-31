@@ -5,6 +5,12 @@ import { protectedProcedure } from "../context";
 import { draftService } from "../services/draft";
 
 /**
+ * @remarks Validates draft identifiers as UUIDs to prevent database casting errors.
+ * @example "019c1665-d23b-716a-91db-0e703e598084"
+ */
+const draftIdSchema = z.string().uuid();
+
+/**
  * @remarks Lists draft identifiers for the authenticated user.
  * @see draftService.list
  */
@@ -41,7 +47,7 @@ const getDraftById = protectedProcedure
 		summary: "Get draft by ID",
 		description: "Fetch a draft record, including its data payload, by ID.",
 	})
-	.input(z.object({ id: z.string() }))
+	.input(z.object({ id: draftIdSchema }))
 	.output(
 		z.object({
 			id: z.string(),
@@ -127,7 +133,7 @@ const updateDraft = protectedProcedure
 		summary: "Update draft",
 		description: "Replace the draft data payload for a draft record.",
 	})
-	.input(z.object({ id: z.string(), data: draftDataSchema }))
+	.input(z.object({ id: draftIdSchema, data: draftDataSchema }))
 	.output(z.void())
 	.handler(async ({ context, input }) => {
 		return draftService.update({ id: input.id, userId: context.user.id, data: input.data });
@@ -145,7 +151,7 @@ const applyDraftOperations = protectedProcedure
 		summary: "Apply draft operations",
 		description: "Apply an ordered list of draft operations to a draft record.",
 	})
-	.input(z.object({ id: z.string(), operations: draftOperationListSchema }))
+	.input(z.object({ id: draftIdSchema, operations: draftOperationListSchema }))
 	.output(z.void())
 	.errors({
 		DRAFT_INVALID_OPERATION: {
@@ -169,7 +175,7 @@ const deleteDraft = protectedProcedure
 		summary: "Delete draft",
 		description: "Delete a draft record by ID.",
 	})
-	.input(z.object({ id: z.string() }))
+	.input(z.object({ id: draftIdSchema }))
 	.output(z.void())
 	.handler(async ({ context, input }) => {
 		return draftService.delete({ id: input.id, userId: context.user.id });

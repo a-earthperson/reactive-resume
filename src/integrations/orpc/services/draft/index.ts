@@ -1,6 +1,7 @@
 import { ORPCError } from "@orpc/client";
 import { type DeepMergeLeafURI, deepmergeCustom } from "deepmerge-ts";
 import { and, desc, eq } from "drizzle-orm";
+import z from "zod";
 import { schema } from "@/integrations/drizzle";
 import { db } from "@/integrations/drizzle/client";
 import { type DraftData, draftDataSchema, draftFactory } from "@/schema/draft/data";
@@ -31,6 +32,29 @@ const deepmergeDraft = deepmergeCustom<
 >({
 	mergeArrays: false,
 });
+
+/**
+ * @remarks Validates draft identifiers to avoid database casting failures.
+ * @example "019c1665-d23b-716a-91db-0e703e598084"
+ */
+const draftIdSchema = z.string().uuid();
+
+/**
+ * @remarks Guards draft lookups against malformed identifiers.
+ * @param id - The draft identifier provided by the caller.
+ * @throws ORPCError - Thrown when the identifier is not a valid UUID.
+ */
+const assertValidDraftId = (id: string): void => {
+	const validation = draftIdSchema.safeParse(id);
+
+	if (!validation.success) {
+		throw new ORPCError("DRAFT_INVALID_ID", {
+			status: 400,
+			data: validation.error.issues,
+			message: "Draft ID is malformed.",
+		});
+	}
+};
 
 /**
  * @remarks Deeply merges a partial payload onto a base draft shape.
@@ -168,6 +192,8 @@ export const draftService = {
 	 * @throws ORPCError - Thrown when the draft does not exist.
 	 */
 	getById: async (input: { id: string; userId: string }): Promise<DraftRecord> => {
+		assertValidDraftId(input.id);
+
 		const [draft] = await db
 			.select({
 				id: schema.draft.id,
@@ -233,6 +259,8 @@ export const draftService = {
 	 * @throws ORPCError - Thrown when the draft does not exist.
 	 */
 	update: async (input: { id: string; userId: string; data: DraftData }): Promise<void> => {
+		assertValidDraftId(input.id);
+
 		const updated = await db
 			.update(schema.draft)
 			.set({ data: input.data })
@@ -249,6 +277,8 @@ export const draftService = {
 	 * @throws ORPCError - Thrown when the draft does not exist.
 	 */
 	delete: async (input: { id: string; userId: string }): Promise<void> => {
+		assertValidDraftId(input.id);
+
 		const deleted = await db
 			.delete(schema.draft)
 			.where(and(eq(schema.draft.id, input.id), eq(schema.draft.userId, input.userId)))
@@ -265,6 +295,8 @@ export const draftService = {
 	 * @throws ORPCError - Thrown when the resulting draft payload is invalid.
 	 */
 	applyOperations: async (input: { id: string; userId: string; operations: DraftOperation[] }): Promise<void> => {
+		assertValidDraftId(input.id);
+
 		const current = await draftService.getById({ id: input.id, userId: input.userId });
 		const data = applyOperationsToDraft(current.data, input.operations);
 

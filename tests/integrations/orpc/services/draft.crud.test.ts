@@ -199,6 +199,16 @@ describe("draftService.create/getById", () => {
 
 		await expect(draftService.getById({ id: draftId, userId: otherUserId })).rejects.toBeInstanceOf(ORPCError);
 	});
+
+	/**
+	 * @remarks
+	 * Rejects malformed identifiers before any database lookup occurs.
+	 */
+	it("rejects malformed draft identifiers", async () => {
+		const userId = "00000000-0000-0000-0000-000000000007";
+
+		await expect(draftService.getById({ id: "not-a-uuid", userId })).rejects.toBeInstanceOf(ORPCError);
+	});
 });
 
 /**
