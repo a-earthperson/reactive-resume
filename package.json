@@ -28,6 +28,7 @@
 		"lingui:extract": "lingui extract --clean --overwrite",
 		"lint": "biome check --write .",
 		"start": "node .output/server/index.mjs",
+		"test": "vitest run",
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
@@ -136,7 +137,8 @@
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
 		"vite": "npm:rolldown-vite@latest",
-		"vite-plugin-pwa": "^1.2.0"
+		"vite-plugin-pwa": "^1.2.0",
+		"vitest": "^4.0.18"
 	},
 	"pnpm": {
 		"overrides": {
