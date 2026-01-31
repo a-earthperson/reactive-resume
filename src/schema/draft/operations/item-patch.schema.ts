@@ -32,7 +32,7 @@ import {
  * @param itemSchema - The schema for the full item shape.
  * @returns A schema that requires `id` while allowing partial updates of other fields.
  */
-const createItemPatchSchema = <TItemSchema extends z.ZodObject<any>>(itemSchema: TItemSchema) =>
+const createItemPatchSchema = <TItemSchema extends z.ZodObject<z.ZodRawShape>>(itemSchema: TItemSchema) =>
 	listItemDataSchema.and(itemSchema.partial());
 
 /**

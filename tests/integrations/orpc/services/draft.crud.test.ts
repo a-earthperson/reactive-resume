@@ -8,8 +8,8 @@
  */
 import { ORPCError } from "@orpc/client";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import type { DraftOperation } from "@/schema/draft/operations";
 import { draftFactory } from "@/schema/draft/data";
+import type { DraftOperation } from "@/schema/draft/operations";
 import {
 	createDraftDataWithDetails,
 	createEmptyDraftData,
@@ -417,9 +417,9 @@ describe("draftService.createFromOperations", () => {
 			value: 123,
 		} as unknown as DraftOperation;
 
-		await expect(
-			draftService.createFromOperations({ userId, operations: [invalidOperation] }),
-		).rejects.toBeInstanceOf(ORPCError);
+		await expect(draftService.createFromOperations({ userId, operations: [invalidOperation] })).rejects.toBeInstanceOf(
+			ORPCError,
+		);
 	});
 
 	/**
