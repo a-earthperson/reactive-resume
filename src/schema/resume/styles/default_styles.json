@@ -1,0 +1,170 @@
+{
+	"itemOptions": {
+		"showLinkInTitle": false
+	},
+	"baseItem": {
+		"hidden": false,
+		"options": {
+			"showLinkInTitle": false
+		}
+	},
+	"picture": {
+		"hidden": false,
+		"size": 80,
+		"rotation": 0,
+		"aspectRatio": 1,
+		"borderRadius": 0,
+		"borderColor": "rgba(0, 0, 0, 0.5)",
+		"borderWidth": 0,
+		"shadowColor": "rgba(0, 0, 0, 0.5)",
+		"shadowWidth": 0
+	},
+	"customField": {
+		"icon": ""
+	},
+	"summary": {
+		"hidden": false,
+		"columns": 1
+	},
+	"section": {
+		"hidden": false,
+		"columns": 1
+	},
+	"items": {
+		"profile": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			},
+			"icon": ""
+		},
+		"experience": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			}
+		},
+		"education": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			}
+		},
+		"project": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			}
+		},
+		"skill": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			},
+			"icon": ""
+		},
+		"language": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			}
+		},
+		"interest": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			},
+			"icon": ""
+		},
+		"award": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			}
+		},
+		"certification": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			}
+		},
+		"publication": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			}
+		},
+		"volunteer": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			}
+		},
+		"reference": {
+			"hidden": false,
+			"options": {
+				"showLinkInTitle": false
+			}
+		}
+	},
+	"customSection": {
+		"hidden": false,
+		"columns": 1
+	},
+	"pageLayout": {
+		"fullWidth": false,
+		"main": ["profiles", "summary", "education", "experience", "projects", "volunteer", "references"],
+		"sidebar": ["skills", "certifications", "awards", "languages", "interests", "publications"]
+	},
+	"metadata": {
+		"template": "onyx",
+		"layout": {
+			"sidebarWidth": 35,
+			"pages": [
+				{
+					"fullWidth": false,
+					"main": ["profiles", "summary", "education", "experience", "projects", "volunteer", "references"],
+					"sidebar": ["skills", "certifications", "awards", "languages", "interests", "publications"]
+				}
+			]
+		},
+		"css": {
+			"enabled": false,
+			"value": ""
+		},
+		"page": {
+			"gapX": 4,
+			"gapY": 6,
+			"marginX": 14,
+			"marginY": 12,
+			"format": "a4",
+			"locale": "en-US",
+			"hideIcons": false
+		},
+		"design": {
+			"colors": {
+				"primary": "rgba(220, 38, 38, 1)",
+				"text": "rgba(0, 0, 0, 1)",
+				"background": "rgba(255, 255, 255, 1)"
+			},
+			"level": {
+				"icon": "star",
+				"type": "circle"
+			}
+		},
+		"typography": {
+			"body": {
+				"fontFamily": "IBM Plex Serif",
+				"fontWeights": ["400", "500"],
+				"fontSize": 10,
+				"lineHeight": 1.5
+			},
+			"heading": {
+				"fontFamily": "IBM Plex Serif",
+				"fontWeights": ["600"],
+				"fontSize": 14,
+				"lineHeight": 1.5
+			}
+		}
+	}
+}

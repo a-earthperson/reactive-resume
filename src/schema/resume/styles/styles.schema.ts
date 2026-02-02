@@ -11,7 +11,7 @@
  * @see {@link ./styles.types | Resume Styles types}
  */
 import z from "zod";
-import { templateSchema } from "@/schema/templates";
+import { templateSchema } from "../../templates";
 
 /**
  * @remarks Accepts icon identifiers used by the resume templates.
@@ -327,4 +327,43 @@ export const metadataStylesSchema = z.object({
 	page: pageSchema.describe("Page formatting configuration."),
 	design: designSchema.describe("Design palette and level indicators."),
 	typography: typographySchema.describe("Typography configuration for headings and body text."),
+});
+
+/**
+ * @remarks
+ * Resume styles payload schema. This validates any complete styles configuration,
+ * including (but not limited to) the JSON-backed defaults used by the style factory.
+ *
+ * @example
+ * {
+ *   "itemOptions": { "showLinkInTitle": false },
+ *   "baseItem": { "hidden": false, "options": { "showLinkInTitle": false } },
+ *   "picture": { "hidden": false, "size": 80, "rotation": 0, "aspectRatio": 1 },
+ *   "metadata": { "template": "onyx", "layout": { "sidebarWidth": 35, "pages": [] } }
+ * }
+ */
+export const resumeStylesSchema = z.object({
+	itemOptions: itemOptionsSchema,
+	baseItem: baseItemStylesSchema,
+	picture: pictureStylesSchema,
+	customField: customFieldStylesSchema,
+	summary: summaryStylesSchema,
+	section: sectionStylesSchema,
+	items: z.object({
+		profile: profileItemStylesSchema,
+		experience: experienceItemStylesSchema,
+		education: educationItemStylesSchema,
+		project: projectItemStylesSchema,
+		skill: skillItemStylesSchema,
+		language: languageItemStylesSchema,
+		interest: interestItemStylesSchema,
+		award: awardItemStylesSchema,
+		certification: certificationItemStylesSchema,
+		publication: publicationItemStylesSchema,
+		volunteer: volunteerItemStylesSchema,
+		reference: referenceItemStylesSchema,
+	}),
+	customSection: customSectionStylesSchema,
+	pageLayout: pageLayoutSchema,
+	metadata: metadataStylesSchema,
 });
