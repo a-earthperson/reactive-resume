@@ -370,39 +370,6 @@ export const sectionsDataSchema = z.object({
 });
 
 /**
- * @remarks Validates a custom section item union for drafts.
- * @example { name: "" }
- */
-export const customSectionItemDataSchema = z.union([
-	profileItemDataSchema,
-	experienceItemDataSchema,
-	educationItemDataSchema,
-	projectItemDataSchema,
-	skillItemDataSchema,
-	languageItemDataSchema,
-	interestItemDataSchema,
-	awardItemDataSchema,
-	certificationItemDataSchema,
-	publicationItemDataSchema,
-	volunteerItemDataSchema,
-	referenceItemDataSchema,
-]);
-
-/**
- * @remarks Validates a custom section structure for drafts.
- * @example { title: "Projects", type: "projects", items: [] }
- */
-export const customSectionDataSchema = listItemDataSchema.extend({
-	title: z.string().describe("The title of the section."),
-	type: sectionTypeSchema.describe(
-		"The type of items this custom section contains. Determines which item schema and form fields to use.",
-	),
-	items: z
-		.array(customSectionItemDataSchema)
-		.describe("The items to display in the custom section. Items follow the schema of the section type."),
-});
-
-/**
  * @remarks Validates metadata for draft data.
  * @example { notes: "" }
  */
@@ -415,8 +382,8 @@ export const metadataDataSchema = z.object({
 });
 
 /**
- * @remarks Validates Draft Resume data while allowing empty values.
- * @example { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, customSections: [], metadata: { notes: "" } }
+ * @remarks Validates Draft Resume data while allowing empty values and excluding view-owned custom sections.
+ * @example { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, metadata: { notes: "" } }
  */
 export const draftDataSchema = z.object({
 	picture: pictureDataSchema.describe("Configuration for photograph displayed on the resume"),
@@ -427,10 +394,7 @@ export const draftDataSchema = z.object({
 	sections: sectionsDataSchema.describe(
 		"Various sections of the resume, such as experience, education, projects, etc.",
 	),
-	customSections: z
-		.array(customSectionDataSchema)
-		.describe("Custom sections of the resume, such as a custom section for notes, etc."),
 	metadata: metadataDataSchema.describe(
-		"Metadata for the resume, such as template, layout, typography, etc. This section describes the overall design and appearance of the resume.",
+		"metadata.notes for the resume.",
 	),
 });

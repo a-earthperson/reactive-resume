@@ -12,7 +12,6 @@ import {
 	awardsSectionDataSchema,
 	basicsDataSchema,
 	certificationsSectionDataSchema,
-	customSectionDataSchema,
 	educationSectionDataSchema,
 	experienceSectionDataSchema,
 	interestsSectionDataSchema,
@@ -94,11 +93,3 @@ export const replaceSectionOperationSchema = z.object({
 	data: sectionDataSchema,
 });
 
-/**
- * @remarks Replace the custom sections payload on the draft.
- * @example { op: "replaceCustomSections", data: [] }
- */
-export const replaceCustomSectionsOperationSchema = z.object({
-	op: z.literal("replaceCustomSections"),
-	data: z.array(customSectionDataSchema),
-});

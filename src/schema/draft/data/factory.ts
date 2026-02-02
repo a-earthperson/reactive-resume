@@ -188,30 +188,15 @@ const createEmptySections = (): DraftResume.SectionsData => ({
 });
 
 /**
- * @remarks Creates an empty custom section entry.
- * @param id - The stable identifier for the custom section.
- * @param type - The base section type that defines the item shape.
- * @returns A custom section payload with empty title and items.
- * @example { id: "custom-1", title: "", type: "projects", items: [] }
- */
-const createEmptyCustomSection = (id: string, type: DraftResume.SectionType): DraftResume.CustomSectionData => ({
-	id,
-	title: "",
-	type,
-	items: [],
-});
-
-/**
  * @remarks Creates the canonical empty draft payload.
  * @returns A DraftData payload populated with empty values.
- * @example { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, customSections: [], metadata: { notes: "" } }
+ * @example { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, metadata: { notes: "" } }
  */
 const createEmptyDraft = (): DraftData => ({
 	picture: createEmptyPicture(),
 	basics: createEmptyBasics(),
 	summary: createEmptySummary(),
 	sections: createEmptySections(),
-	customSections: [],
 	metadata: createEmptyMetadata(),
 });
 
@@ -253,11 +238,6 @@ export const draftFactory = {
 		},
 		item: {
 			empty: createEmptySectionItem,
-		},
-	},
-	customSections: {
-		item: {
-			empty: createEmptyCustomSection,
 		},
 	},
 	draft: {

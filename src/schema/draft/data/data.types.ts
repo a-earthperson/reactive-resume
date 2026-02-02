@@ -29,8 +29,6 @@ import type {
 	certificationItemDataSchema,
 	certificationsSectionDataSchema,
 	customFieldDataSchema,
-	customSectionDataSchema,
-	customSectionItemDataSchema,
 	draftDataSchema,
 	educationItemDataSchema,
 	educationSectionDataSchema,
@@ -425,26 +423,14 @@ export namespace DraftResume {
 	export type SectionsData = ZodInfer<typeof sectionsDataSchema>;
 
 	/**
-	 * @remarks Represents an item in a custom section.
-	 * @example { name: "Custom Item" }
-	 */
-	export type CustomSectionItemData = ZodInfer<typeof customSectionItemDataSchema>;
-
-	/**
-	 * @remarks Stores a custom section, mapping a type to its items.
-	 * @example { title: "Projects", type: "projects", items: [] }
-	 */
-	export type CustomSectionData = ListItemData & ZodInfer<typeof customSectionDataSchema>;
-
-	/**
 	 * @remarks Holds metadata for draft-specific behaviors or notes.
 	 * @example { notes: "" }
 	 */
 	export type MetadataData = ZodInfer<typeof metadataDataSchema>;
 
 	/**
-	 * @remarks Top-level draft data structure persisted by the /draft endpoints.
-	 * @example { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, customSections: [], metadata: { notes: "" } }
+	 * @remarks Top-level draft data structure persisted by the /draft endpoints, excluding view-owned custom sections.
+	 * @example { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, metadata: { notes: "" } }
 	 */
 	export type DraftData = ZodInfer<typeof draftDataSchema>;
 }

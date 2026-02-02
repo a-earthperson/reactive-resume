@@ -54,25 +54,6 @@ export const applyItemOpsOperation = (draft: DraftData, operation: ItemOpsOperat
 				},
 			};
 		}
-		case "customSection": {
-			const target = operation.target as Extract<ItemOpsOperation["target"], { kind: "customSection" }>;
-			const sectionIndex = draft.customSections.findIndex((section) => section.id === target.sectionId);
-			if (sectionIndex < 0) return draft;
-
-			const section = draft.customSections[sectionIndex];
-			const nextItems = applyItemOpsToList(
-				section.items as ItemWithId[],
-				operation,
-				(id) => draftFactory.sections.item.empty(section.type, id) as ItemWithId,
-			) as DraftData["customSections"][number]["items"];
-			const nextSections = [...draft.customSections];
-			nextSections[sectionIndex] = { ...section, items: nextItems };
-
-			return {
-				...draft,
-				customSections: nextSections,
-			};
-		}
 	}
 };
 

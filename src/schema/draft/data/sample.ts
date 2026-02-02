@@ -371,27 +371,6 @@ export const sampleDraftData: DraftData = {
 			],
 		},
 	},
-	customSections: [
-		{
-			id: "custom-defense-projects",
-			title: "Defense Research Projects",
-			type: "projects",
-			items: [
-				{
-					id: "proj-shockwave",
-					name: "Shockwave and Hydrodynamic Calculations",
-					period: "1940s",
-					website: {
-						label: "",
-						url: "",
-					},
-					description:
-						"Developed numerical techniques for shockwave propagation and implosion dynamics " +
-						"used in defense research and early computational physics.",
-				},
-			],
-		},
-	],
 	metadata: {
 		notes: "Draft profile for historical figure; contact fields are intentionally left blank where unknown.",
 	},

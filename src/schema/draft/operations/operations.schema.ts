@@ -13,7 +13,6 @@ import z from "zod";
 import { itemOpsOperationSchema, setFieldOperationSchema } from "./item-patch.schema";
 import {
 	replaceBasicsOperationSchema,
-	replaceCustomSectionsOperationSchema,
 	replaceMetadataOperationSchema,
 	replacePictureOperationSchema,
 	replaceSectionOperationSchema,
@@ -33,7 +32,6 @@ export const draftOperationSchema = z.union([
 	replaceSummaryOperationSchema,
 	replaceMetadataOperationSchema,
 	replaceSectionOperationSchema,
-	replaceCustomSectionsOperationSchema,
 	setFieldOperationSchema,
 	itemOpsOperationSchema,
 ]);

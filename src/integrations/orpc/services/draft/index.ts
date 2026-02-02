@@ -101,7 +101,7 @@ export type DraftListItem = {
 
 /**
  * @remarks Represents a fully loaded draft record for API responses.
- * @example { id: "uuid", data: { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, customSections: [], metadata: { notes: "" } }, createdAt: new Date(), updatedAt: new Date() }
+ * @example { id: "uuid", data: { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, metadata: { notes: "" } }, createdAt: new Date(), updatedAt: new Date() }
  */
 export type DraftRecord = {
 	id: string;
@@ -132,8 +132,6 @@ const applyDraftOperation = (draft: DraftData, operation: DraftOperation): Draft
 			return { ...draft, metadata: operation.data };
 		case "replaceSection":
 			return { ...draft, sections: { ...draft.sections, [operation.section]: operation.data } };
-		case "replaceCustomSections":
-			return { ...draft, customSections: operation.data };
 		default: {
 			const _exhaustive: never = operation;
 			return _exhaustive;

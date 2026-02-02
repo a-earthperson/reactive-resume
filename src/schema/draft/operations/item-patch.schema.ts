@@ -114,25 +114,6 @@ const volunteerItemPatchSchema = createItemPatchSchema(volunteerItemDataSchema);
 const referenceItemPatchSchema = createItemPatchSchema(referenceItemDataSchema);
 
 /**
- * @remarks Validates partial updates to custom section items.
- * @example { id: "custom-item-1", title: "Custom Item" }
- */
-const customSectionItemPatchSchema = z.union([
-	profileItemPatchSchema,
-	experienceItemPatchSchema,
-	educationItemPatchSchema,
-	projectItemPatchSchema,
-	skillItemPatchSchema,
-	languageItemPatchSchema,
-	interestItemPatchSchema,
-	awardItemPatchSchema,
-	certificationItemPatchSchema,
-	publicationItemPatchSchema,
-	volunteerItemPatchSchema,
-	referenceItemPatchSchema,
-]);
-
-/**
  * @remarks Validates partial updates to any supported list item type.
  * @example { id: "experience-1", company: "Analytical Engine" }
  */
@@ -150,7 +131,6 @@ const itemPatchSchema = z.union([
 	publicationItemPatchSchema,
 	volunteerItemPatchSchema,
 	referenceItemPatchSchema,
-	customSectionItemPatchSchema,
 ]);
 
 /**
@@ -160,7 +140,6 @@ const itemPatchSchema = z.union([
 const itemOpsTargetSchema = z.discriminatedUnion("kind", [
 	z.object({ kind: z.literal("section"), section: sectionTypeSchema }),
 	z.object({ kind: z.literal("customField") }),
-	z.object({ kind: z.literal("customSection"), sectionId: z.string() }),
 ]);
 
 /**
