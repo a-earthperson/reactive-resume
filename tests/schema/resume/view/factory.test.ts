@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import type { DraftData, DraftResume } from "@/schema/draft/data";
+import type { DraftData, Draft } from "@/schema/draft/data";
 import { draftFactory } from "@/schema/draft/data";
 import { resumeStylesFactory } from "@/schema/resume/styles";
 import { resumeViewFactory, resumeViewSchema, unzipResumeView, zipResumeView } from "@/schema/resume/view";
 
-type SectionKey = DraftResume.SectionType;
+type SectionKey = Draft.SectionType;
 
 const sectionTypes = [
 	"profiles",

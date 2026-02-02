@@ -2,7 +2,7 @@
  * @packageDocumentation
  *
  * @remarks
- * Runtime validation schemas for DraftResume command/operation payloads.
+ * Runtime validation schemas for Draft command/operation payloads.
  * This module aggregates replace-style and patch-style operations into a single contract
  * that can be applied in ordered batches.
  *

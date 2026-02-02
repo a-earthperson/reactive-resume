@@ -4,7 +4,7 @@ import { and, desc, eq } from "drizzle-orm";
 import z from "zod";
 import { schema } from "@/integrations/drizzle";
 import { db } from "@/integrations/drizzle/client";
-import { type DraftData, draftDataSchema, draftFactory } from "@/schema/draft/data";
+import { type DraftData, draftSchema, draftFactory } from "@/schema/draft/data";
 import type { DraftOperation } from "@/schema/draft/operations";
 import { generateId } from "@/utils/string";
 import { applyItemOpsOperation } from "./item-ops";
@@ -76,7 +76,7 @@ const mergeDraftData = (base: DraftData, patch: unknown): DraftData => {
 const normalizeDraftCreateData = (data?: unknown): DraftData => {
 	const base = draftFactory.draft.empty();
 	const merged = mergeDraftData(base, data ?? {});
-	const validation = draftDataSchema.safeParse(merged);
+	const validation = draftSchema.safeParse(merged);
 
 	if (!validation.success) {
 		throw new ORPCError("DRAFT_INVALID_CREATE", {
@@ -148,7 +148,7 @@ const applyDraftOperation = (draft: DraftData, operation: DraftOperation): Draft
  */
 const applyOperationsToDraft = (base: DraftData, operations: DraftOperation[]): DraftData => {
 	const nextDraft = operations.reduce(applyDraftOperation, base);
-	const validation = draftDataSchema.safeParse(nextDraft);
+	const validation = draftSchema.safeParse(nextDraft);
 
 	if (!validation.success) {
 		throw new ORPCError("DRAFT_INVALID_OPERATION", {

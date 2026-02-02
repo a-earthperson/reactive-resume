@@ -2,11 +2,11 @@
  * @packageDocumentation
  *
  * @remarks
- * Type-only module for DraftResume command/operation payloads.
+ * Type-only module for Draft command/operation payloads.
  * Types are inferred from the runtime schemas in `operations.schema.ts`
  * to keep validation and typing aligned.
  *
- * @see {@link ./operations.schema | DraftResume operation schema}
+ * @see {@link ./operations.schema | Draft operation schema}
  */
 import type { infer as ZodInfer } from "zod";
 import type { draftOperationListSchema, draftOperationSchema } from "./operations.schema";

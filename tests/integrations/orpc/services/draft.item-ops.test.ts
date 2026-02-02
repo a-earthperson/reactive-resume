@@ -8,7 +8,7 @@
  */
 import { describe, expect, it } from "vitest";
 import { applyItemOpsOperation } from "@/integrations/orpc/services/draft/item-ops";
-import type { DraftData, DraftResume } from "@/schema/draft/data";
+import type { DraftData, Draft } from "@/schema/draft/data";
 import { createEmptyDraftData } from "./draft-test-helpers";
 
 /**
@@ -114,7 +114,7 @@ describe("applyItemOpsOperation", () => {
 		expect(withCustomSectionItem.basics.customFields[0]?.text).toBe("Open to relocation");
 		expect(withCustomSectionItem.basics.customFields[0]?.link).toBe("");
 		const customSection = withCustomSectionItem.customSections[0];
-		const customItem = customSection?.items[0] as DraftResume.ProjectItemData | undefined;
+		const customItem = customSection?.items[0] as Draft.ProjectItemData | undefined;
 
 		expect(customSection?.type).toBe("projects");
 		expect(customItem?.id).toBe("custom-item-1");

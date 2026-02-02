@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { type DraftData, draftDataSchema, draftFactory, urlValueSchema } from "@/schema/draft/data";
+import { type DraftData, draftSchema, draftFactory, urlValueSchema } from "@/schema/draft/data";
 
 /**
  * @remarks
@@ -7,7 +7,7 @@ import { type DraftData, draftDataSchema, draftFactory, urlValueSchema } from "@
  * accepts iterative drafts that may not have content yet.
  *
  * @returns A DraftData-compliant object populated with empty strings and arrays.
- * @see {@link draftDataSchema}
+ * @see {@link draftSchema}
  */
 const createEmptyDraftData = (): DraftData => draftFactory.draft.empty();
 
@@ -16,14 +16,14 @@ const createEmptyDraftData = (): DraftData => draftFactory.draft.empty();
  * Validates the DraftData schema behavior with intentionally empty values.
  * Ensures required fields exist while content can be blank during drafting.
  *
- * @see {@link draftDataSchema}
+ * @see {@link draftSchema}
  */
 describe("draftDataSchema", () => {
 	/**
 	 * @remarks Confirms that a fully shaped payload with empty strings is accepted.
 	 */
 	it("accepts empty strings and empty arrays", () => {
-		const result = draftDataSchema.safeParse(createEmptyDraftData());
+		const result = draftSchema.safeParse(createEmptyDraftData());
 		expect(result.success).toBe(true);
 	});
 
@@ -51,7 +51,7 @@ describe("draftDataSchema", () => {
 			},
 		};
 
-		const result = draftDataSchema.safeParse(invalidPayload);
+		const result = draftSchema.safeParse(invalidPayload);
 		expect(result.success).toBe(false);
 	});
 
@@ -59,7 +59,7 @@ describe("draftDataSchema", () => {
 	 * @remarks Ensures missing top-level keys are rejected to preserve schema shape.
 	 */
 	it("rejects missing required top-level fields", () => {
-		const result = draftDataSchema.safeParse({});
+		const result = draftSchema.safeParse({});
 		expect(result.success).toBe(false);
 		expect(result.error?.issues.length).toBeGreaterThan(0);
 	});

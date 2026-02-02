@@ -2,10 +2,10 @@
  * @packageDocumentation
  *
  * @remarks
- * Replace-style DraftResume operation schemas. These operations swap entire
+ * Replace-style Draft operation schemas. These operations swap entire
  * top-level blocks, preserving a clear "replace" intent for batch processing.
  *
- * @see {@link ./operations.schema | DraftResume operation schema}
+ * @see {@link ./operations.schema | Draft operation schema}
  */
 import z from "zod";
 import {
@@ -26,7 +26,7 @@ import {
 	skillsSectionDataSchema,
 	summaryDataSchema,
 	volunteerSectionDataSchema,
-} from "../data/data.schema";
+} from "@/schema/draft/data";
 
 /**
  * @remarks Accepts any supported section payload for replace operations.

@@ -1,5 +1,5 @@
 import z from "zod";
-import { draftDataSchema } from "@/schema/draft/data";
+import { draftSchema } from "@/schema/draft/data";
 import { draftOperationListSchema } from "@/schema/draft/operations";
 import { protectedProcedure } from "../context";
 import { draftService } from "../services/draft";
@@ -51,7 +51,7 @@ const getDraftById = protectedProcedure
 	.output(
 		z.object({
 			id: z.string(),
-			data: draftDataSchema,
+			data: draftSchema,
 			createdAt: z.date(),
 			updatedAt: z.date(),
 		}),
@@ -133,7 +133,7 @@ const updateDraft = protectedProcedure
 		summary: "Update draft",
 		description: "Replace the draft data payload for a draft record.",
 	})
-	.input(z.object({ id: draftIdSchema, data: draftDataSchema }))
+	.input(z.object({ id: draftIdSchema, data: draftSchema }))
 	.output(z.void())
 	.handler(async ({ context, input }) => {
 		return draftService.update({ id: input.id, userId: context.user.id, data: input.data });

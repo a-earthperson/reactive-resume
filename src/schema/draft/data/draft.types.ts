@@ -2,22 +2,22 @@
  * @packageDocumentation
  *
  * @remarks
- * This module is intentionally type-only and derives DraftResume types from the runtime
- * Zod schemas in `data.schema.ts`. This schema-first pattern makes the validator the
+ * This module is intentionally type-only and derives Draft types from the runtime
+ * Zod schemas in `draft.schema.ts`. This schema-first pattern makes the validator the
  * single source of truth and eliminates manual type duplication.
  *
  * Design rationale:
  * - Single source of truth: the schema defines the contract; types are inferred.
  * - Drift prevention: changes to the schema automatically update DraftData and related types.
  * - Type-only imports: `import type` keeps Zod out of runtime bundles for consumers.
- * - Clear layering: runtime validation stays in `data.schema.ts`, compile-time types live here.
+ * - Clear layering: runtime validation stays in `draft.schema.ts`, compile-time types live here.
  *
  * Most consumers should import from the stable barrel `@/schema/draft/data` to avoid
  * coupling to internal filenames. This type module must not import from the barrel to keep
  * dependencies acyclic.
  *
- * @see {@link ./index | DraftResume barrel}
- * @see {@link ./data.schema | DraftResume schema}
+ * @see {@link ./index | Draft barrel}
+ * @see {@link ./data.schema | Draft schema}
  * @example
  * import type { DraftData } from "@/schema/draft/data";
  */
@@ -29,7 +29,7 @@ import type {
 	certificationItemDataSchema,
 	certificationsSectionDataSchema,
 	customFieldDataSchema,
-	draftDataSchema,
+	draftSchema,
 	educationItemDataSchema,
 	educationSectionDataSchema,
 	experienceItemDataSchema,
@@ -58,7 +58,7 @@ import type {
 	urlValueSchema,
 	volunteerItemDataSchema,
 	volunteerSectionDataSchema,
-} from "./data.schema";
+} from "./draft.schema.ts";
 
 /**
  * @remarks Represents a URL-like value that can be concrete or still being drafted.
@@ -80,9 +80,9 @@ export type ListItemData = ZodInfer<typeof listItemDataSchema>;
 
 /**
  * @remarks Namespace that groups Draft Resume data types for cohesive use.
- * @see DraftResume.DraftData
+ * @see Draft.Data
  */
-export namespace DraftResume {
+export namespace Draft {
 	/**
 	 * @remarks Represents a single picture reference used by the draft.
 	 * @example { url: "https://example.com/photo.jpg" }
@@ -432,11 +432,11 @@ export namespace DraftResume {
 	 * @remarks Top-level draft data structure persisted by the /draft endpoints, excluding view-owned custom sections.
 	 * @example { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, metadata: { notes: "" } }
 	 */
-	export type DraftData = ZodInfer<typeof draftDataSchema>;
+	export type Data = ZodInfer<typeof draftSchema>;
 }
 
 /**
  * @remarks Alias for the canonical Draft Resume data model.
- * @see DraftResume.DraftData
+ * @see Draft.Data
  */
-export type DraftData = DraftResume.DraftData;
+export type DraftData = Draft.Data;

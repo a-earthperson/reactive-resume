@@ -2,10 +2,10 @@
  * @packageDocumentation
  *
  * @remarks
- * Patch-style DraftResume operation schemas. These operations support partial,
+ * Patch-style Draft operation schemas. These operations support partial,
  * item-level and field-level updates while preserving schema validation.
  *
- * @see {@link ./operations.schema | DraftResume operation schema}
+ * @see {@link ./operations.schema | Draft operation schema}
  */
 import z from "zod";
 import {
@@ -25,7 +25,7 @@ import {
 	skillItemDataSchema,
 	urlValueSchema,
 	volunteerItemDataSchema,
-} from "../data/data.schema";
+} from "@/schema/draft/data";
 
 /**
  * @remarks Builds a partial item schema while keeping stable identifiers required.

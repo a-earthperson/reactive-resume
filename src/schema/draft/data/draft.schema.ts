@@ -2,16 +2,16 @@
  * @packageDocumentation
  *
  * @remarks
- * Runtime validation schemas for DraftResume payloads.
+ * Runtime validation schemas for Draft payloads.
  * This module intentionally owns the runtime contract. Compile-time types are derived
- * in `data.types.ts` to prevent divergence between validation and typing.
+ * in `draft.types.ts` to prevent divergence between validation and typing.
  *
  * Most consumers should import from the stable barrel `@/schema/draft/data`
  * to avoid coupling to internal filenames. This schema module must not import
  * from the barrel to keep dependencies acyclic.
  *
- * @see {@link ./index | DraftResume barrel}
- * @see {@link ./data.types | DraftResume types}
+ * @see {@link ./index | Draft barrel}
+ * @see {@link ./data.types | Draft types}
  */
 import z from "zod";
 
@@ -385,7 +385,7 @@ export const metadataDataSchema = z.object({
  * @remarks Validates Draft Resume data while allowing empty values and excluding view-owned custom sections.
  * @example { picture: { url: "" }, basics: { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }, summary: { title: "", content: "" }, sections: { profiles: { title: "", items: [] }, experience: { title: "", items: [] }, education: { title: "", items: [] }, projects: { title: "", items: [] }, skills: { title: "", items: [] }, languages: { title: "", items: [] }, interests: { title: "", items: [] }, awards: { title: "", items: [] }, certifications: { title: "", items: [] }, publications: { title: "", items: [] }, volunteer: { title: "", items: [] }, references: { title: "", items: [] } }, metadata: { notes: "" } }
  */
-export const draftDataSchema = z.object({
+export const draftSchema = z.object({
 	picture: pictureDataSchema.describe("Configuration for photograph displayed on the resume"),
 	basics: basicsDataSchema.describe(
 		"Basic information about the author, such as name, email, phone, location, and website",

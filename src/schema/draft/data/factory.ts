@@ -2,7 +2,7 @@
  * @packageDocumentation
  *
  * @remarks
- * Canonical factory for DraftResume payloads. This module centralizes all empty
+ * Canonical factory for Draft payloads. This module centralizes all empty
  * and default object construction so server-side logic and tests can share a
  * single, authoritative baseline.
  *
@@ -11,10 +11,10 @@
  * - Stable, typed entry points for list item and section construction.
  * - Ergonomic nesting that mirrors the DraftData shape.
  *
- * @see {@link ./data.schema | DraftResume schema}
- * @see {@link ./data.types | DraftResume types}
+ * @see {@link ./data.schema | Draft schema}
+ * @see {@link ./data.types | Draft types}
  */
-import type { DraftData, DraftResume, LabeledURL } from "./data.types";
+import type { DraftData, Draft, LabeledURL } from "./draft.types.ts";
 
 type SectionKey = keyof DraftData["sections"];
 
@@ -30,7 +30,7 @@ const createEmptyLabeledUrl = (): LabeledURL => ({ label: "", url: "" });
  * @returns A picture payload with an empty URL.
  * @example { url: "" }
  */
-const createEmptyPicture = (): DraftResume.PictureData => ({ url: "" });
+const createEmptyPicture = (): Draft.PictureData => ({ url: "" });
 
 /**
  * @remarks Creates an empty custom field entry for iterative drafting.
@@ -38,7 +38,7 @@ const createEmptyPicture = (): DraftResume.PictureData => ({ url: "" });
  * @returns A custom field payload with empty values.
  * @example { id: "cf-1", text: "", link: "" }
  */
-const createEmptyCustomField = (id: string): DraftResume.CustomFieldData => ({
+const createEmptyCustomField = (id: string): Draft.CustomFieldData => ({
 	id,
 	text: "",
 	link: "",
@@ -49,7 +49,7 @@ const createEmptyCustomField = (id: string): DraftResume.CustomFieldData => ({
  * @returns A basics payload with empty identity fields.
  * @example { name: "", headline: "", email: "", phone: "", location: "", website: { label: "", url: "" }, customFields: [] }
  */
-const createEmptyBasics = (): DraftResume.BasicsData => ({
+const createEmptyBasics = (): Draft.BasicsData => ({
 	name: "",
 	headline: "",
 	email: "",
@@ -64,14 +64,14 @@ const createEmptyBasics = (): DraftResume.BasicsData => ({
  * @returns A summary payload with empty title and content.
  * @example { title: "", content: "" }
  */
-const createEmptySummary = (): DraftResume.SummaryData => ({ title: "", content: "" });
+const createEmptySummary = (): Draft.SummaryData => ({ title: "", content: "" });
 
 /**
  * @remarks Creates an empty metadata payload.
  * @returns A metadata payload with empty notes.
  * @example { notes: "" }
  */
-const createEmptyMetadata = (): DraftResume.MetadataData => ({ notes: "" });
+const createEmptyMetadata = (): Draft.MetadataData => ({ notes: "" });
 
 /**
  * @remarks Creates an empty section payload.
@@ -79,7 +79,7 @@ const createEmptyMetadata = (): DraftResume.MetadataData => ({ notes: "" });
  * @returns A section payload with an empty title.
  * @example { title: "", items: [] }
  */
-const createEmptySectionData = <TItem>(items: TItem[] = []): DraftResume.SectionData<TItem> => ({
+const createEmptySectionData = <TItem>(items: TItem[] = []): Draft.SectionData<TItem> => ({
 	title: "",
 	items,
 });
@@ -89,7 +89,7 @@ const createEmptySectionData = <TItem>(items: TItem[] = []): DraftResume.Section
  * Builds empty list items for each section type.
  * Used by itemOps upserts to fill missing fields with empty values.
  *
- * @see {@link DraftResume.SectionType}
+ * @see {@link Draft.SectionType}
  */
 const sectionItemFactories: { [K in SectionKey]: (id: string) => DraftData["sections"][K]["items"][number] } = {
 	profiles: (id) => ({ id, network: "", username: "", website: createEmptyLabeledUrl() }),
@@ -135,18 +135,18 @@ const sectionItemFactories: { [K in SectionKey]: (id: string) => DraftData["sect
  * @remarks Builds empty sections keyed by their section identifiers.
  */
 const sectionFactories: { [K in SectionKey]: () => DraftData["sections"][K] } = {
-	profiles: () => createEmptySectionData<DraftResume.ProfileItemData>(),
-	experience: () => createEmptySectionData<DraftResume.ExperienceItemData>(),
-	education: () => createEmptySectionData<DraftResume.EducationItemData>(),
-	projects: () => createEmptySectionData<DraftResume.ProjectItemData>(),
-	skills: () => createEmptySectionData<DraftResume.SkillItemData>(),
-	languages: () => createEmptySectionData<DraftResume.LanguageItemData>(),
-	interests: () => createEmptySectionData<DraftResume.InterestItemData>(),
-	awards: () => createEmptySectionData<DraftResume.AwardItemData>(),
-	certifications: () => createEmptySectionData<DraftResume.CertificationItemData>(),
-	publications: () => createEmptySectionData<DraftResume.PublicationItemData>(),
-	volunteer: () => createEmptySectionData<DraftResume.VolunteerItemData>(),
-	references: () => createEmptySectionData<DraftResume.ReferenceItemData>(),
+	profiles: () => createEmptySectionData<Draft.ProfileItemData>(),
+	experience: () => createEmptySectionData<Draft.ExperienceItemData>(),
+	education: () => createEmptySectionData<Draft.EducationItemData>(),
+	projects: () => createEmptySectionData<Draft.ProjectItemData>(),
+	skills: () => createEmptySectionData<Draft.SkillItemData>(),
+	languages: () => createEmptySectionData<Draft.LanguageItemData>(),
+	interests: () => createEmptySectionData<Draft.InterestItemData>(),
+	awards: () => createEmptySectionData<Draft.AwardItemData>(),
+	certifications: () => createEmptySectionData<Draft.CertificationItemData>(),
+	publications: () => createEmptySectionData<Draft.PublicationItemData>(),
+	volunteer: () => createEmptySectionData<Draft.VolunteerItemData>(),
+	references: () => createEmptySectionData<Draft.ReferenceItemData>(),
 };
 
 /**
@@ -172,7 +172,7 @@ const createEmptySectionItem = <K extends SectionKey>(
  * @remarks Creates the full sections payload with empty section data.
  * @returns A SectionsData payload with empty titles and item arrays.
  */
-const createEmptySections = (): DraftResume.SectionsData => ({
+const createEmptySections = (): Draft.SectionsData => ({
 	profiles: sectionFactories.profiles(),
 	experience: sectionFactories.experience(),
 	education: sectionFactories.education(),
@@ -202,7 +202,7 @@ const createEmptyDraft = (): DraftData => ({
 
 /**
  * @remarks
- * Nested factory that centralizes DraftResume construction and defaults.
+ * Nested factory that centralizes Draft construction and defaults.
  * Prefer using this object instead of ad-hoc literal construction.
  *
  * @example
