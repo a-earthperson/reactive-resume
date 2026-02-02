@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { type DraftData, draftFactory } from "@/schema/draft/data";
-import { sampleDraftData } from "@/schema/draft/data/sample";
+import { type DraftData, draftFactory, sampleDraftData } from "@/schema/draft/data";
 import { resumeStylesFactory } from "@/schema/resume/styles";
 import { resumeViewFactory, resumeViewSchema, unzipResumeView, zipResumeView } from "@/schema/resume/view";
 

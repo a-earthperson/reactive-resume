@@ -1,6 +1,5 @@
 import z from "zod";
-import { sampleResume as sampleResumeView } from "@/schema/resume/sample";
-import { resumeViewSchema } from "@/schema/resume/view";
+import { resumeViewSchema, sampleResumeView } from "@/schema/resume/view";
 import { generateRandomName, slugify } from "@/utils/string";
 import { protectedProcedure, publicProcedure, serverOnlyProcedure } from "../context";
 import { resumeService } from "../services/resume";

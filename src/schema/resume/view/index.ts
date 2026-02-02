@@ -17,6 +17,10 @@
  */
 export * from "./factory";
 /**
+ * @remarks Re-export sample resume views for testing and development.
+ */
+export * from "./view.samples";
+/**
  * @remarks Re-export Resume View runtime schemas for consumers.
  */
 export * from "./view.schema";
