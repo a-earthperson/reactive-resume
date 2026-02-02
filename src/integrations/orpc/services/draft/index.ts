@@ -1,6 +1,7 @@
 import { ORPCError } from "@orpc/client";
 import { type DeepMergeLeafURI, deepmergeCustom } from "deepmerge-ts";
 import { and, desc, eq } from "drizzle-orm";
+import { isPlainObject } from "es-toolkit";
 import z from "zod";
 import { schema } from "@/integrations/drizzle";
 import { db } from "@/integrations/drizzle/client";
@@ -9,17 +10,6 @@ import type { DraftOperation } from "@/schema/draft/operations";
 import { generateId } from "@/utils/string";
 import { applyItemOpsOperation } from "./item-ops";
 import { applySetFieldOperation } from "./set-field";
-
-/**
- * @remarks Identifies plain object values for safe deep merging.
- * @param value - The candidate value to inspect.
- * @returns True when the value is a plain object.
- */
-const isPlainObject = (value: unknown): value is Record<string, unknown> => {
-	if (typeof value !== "object" || value === null) return false;
-	if (Array.isArray(value)) return false;
-	return Object.getPrototypeOf(value) === Object.prototype;
-};
 
 /**
  * @remarks Deep merge function that replaces arrays instead of concatenating them.

@@ -137,7 +137,7 @@
 			"gapY": 6,
 			"marginX": 14,
 			"marginY": 12,
-			"format": "a4",
+			"format": "letter",
 			"locale": "en-US",
 			"hideIcons": false
 		},

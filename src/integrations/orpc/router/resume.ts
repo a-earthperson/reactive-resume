@@ -1,8 +1,17 @@
 import z from "zod";
+import { draftDataSchema } from "@/schema/draft/data";
+import { draftOperationListSchema } from "@/schema/draft/operations";
 import { resumeViewSchema, sampleResumeView } from "@/schema/resume/view";
 import { generateRandomName, slugify } from "@/utils/string";
 import { protectedProcedure, publicProcedure, serverOnlyProcedure } from "../context";
 import { resumeService } from "../services/resume";
+import { resumeDraftService } from "../services/resume-draft";
+
+/**
+ * @remarks Validates draft identifiers as UUIDs to prevent database casting errors.
+ * @example "019c1665-d23b-716a-91db-0e703e598084"
+ */
+const draftIdSchema = z.string().uuid();
 
 const tagsRouter = {
 	list: protectedProcedure
@@ -247,6 +256,75 @@ export const resumeRouter = {
 				tags: input.tags,
 				data: input.data,
 				isPublic: input.isPublic,
+			});
+		}),
+
+	getDraftById: protectedProcedure
+		.route({
+			method: "GET",
+			path: "/resume/{id}/draft",
+			tags: ["Resume"],
+			summary: "Get resume draft by ID",
+			description: "Fetch the draft data slice for a resume by ID.",
+		})
+		.input(z.object({ id: draftIdSchema }))
+		.output(
+			z.object({
+				id: z.string(),
+				data: draftDataSchema,
+				createdAt: z.date(),
+				updatedAt: z.date(),
+			}),
+		)
+		.handler(async ({ context, input }) => {
+			return await resumeDraftService.getById({ id: input.id, userId: context.user.id });
+		}),
+
+	patchDraft: protectedProcedure
+		.route({
+			method: "PATCH",
+			path: "/resume/{id}/draft",
+			tags: ["Resume"],
+			summary: "Patch resume draft data",
+			description: "Patch the draft data slice of a resume view without updating styles.",
+		})
+		.input(z.object({ id: draftIdSchema, data: z.record(z.string(), z.any()) }))
+		.output(z.void())
+		.errors({
+			DRAFT_INVALID_OPERATION: {
+				message: "Draft operations produced an invalid payload.",
+				status: 400,
+			},
+		})
+		.handler(async ({ context, input }) => {
+			return await resumeDraftService.patch({
+				id: input.id,
+				userId: context.user.id,
+				data: input.data,
+			});
+		}),
+
+	applyDraftOperations: protectedProcedure
+		.route({
+			method: "POST",
+			path: "/resume/{id}/draft/ops",
+			tags: ["Resume"],
+			summary: "Apply resume draft operations",
+			description: "Apply an ordered list of draft operations to the resume draft data slice.",
+		})
+		.input(z.object({ id: draftIdSchema, operations: draftOperationListSchema }))
+		.output(z.void())
+		.errors({
+			DRAFT_INVALID_OPERATION: {
+				message: "Draft operations produced an invalid payload.",
+				status: 400,
+			},
+		})
+		.handler(async ({ context, input }) => {
+			return await resumeDraftService.applyOperations({
+				id: input.id,
+				userId: context.user.id,
+				operations: input.operations,
 			});
 		}),
 
