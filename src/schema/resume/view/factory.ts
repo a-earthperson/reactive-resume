@@ -17,16 +17,10 @@
  */
 import type { DraftData, DraftResume } from "../data/index";
 import { draftFactory, sectionTypeSchema } from "../data/index";
-import type { DefaultStyles } from "../styles/styles.factory";
+import type { ResumeStyles } from "../styles/styles.factory";
 import { resumeStylesFactory } from "../styles/styles.factory";
 import type { Resume as ResumeStylesNamespace } from "../styles/styles.types";
 import type { ResumeView } from "./view.types";
-
-/**
- * @remarks Alias for the full Resume styles payload type.
- * @see DefaultStyles
- */
-export type ResumeStyles = DefaultStyles;
 
 /**
  * @remarks Input contract for zipping data and styles into a view.
@@ -464,7 +458,9 @@ export const unzipResumeView = (view: ResumeView): UnzipOutput => {
 			},
 		},
 		customSections: view.customSections
-			.filter((section) => isDraftSectionType(section.type))
+			.filter((section): section is ResumeView["customSections"][number] & { type: DraftResume.SectionType } =>
+				isDraftSectionType(section.type),
+			)
 			.map((section) => ({
 				id: section.id,
 				title: section.title,
