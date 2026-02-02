@@ -9,5 +9,6 @@
  */
 
 export * from "./styles.factory";
+export * from "./styles.samples";
 export * from "./styles.schema";
 export * from "./styles.types";

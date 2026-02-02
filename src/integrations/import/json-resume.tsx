@@ -1,6 +1,6 @@
 import { flattenError, ZodError, z } from "zod";
 import type { IconName } from "@/schema/icons";
-import { defaultResumeData, type ResumeData, resumeDataSchema } from "@/schema/resume/data";
+import { type ResumeView, resumeViewFactory, resumeViewSchema } from "@/schema/resume/view";
 import { generateId } from "@/utils/string";
 
 // Custom ISO 8601 date pattern that allows partial dates (year only, year-month, or full date)
@@ -358,10 +358,8 @@ function createUrl(url?: string, label?: string): { url: string; label: string }
 }
 
 export class JSONResumeImporter {
-	convert(jsonResume: JSONResume): ResumeData {
-		const result: ResumeData = {
-			...defaultResumeData,
-		};
+	convert(jsonResume: JSONResume): ResumeView {
+		const result: ResumeView = resumeViewFactory.defaults();
 
 		// Map basics
 		if (jsonResume.basics) {
@@ -379,7 +377,7 @@ export class JSONResumeImporter {
 			// Map image to picture
 			if (basics.image) {
 				result.picture = {
-					...defaultResumeData.picture,
+					...result.picture,
 					url: basics.image,
 					hidden: false,
 				};
@@ -389,7 +387,7 @@ export class JSONResumeImporter {
 		// Map summary
 		if (jsonResume.basics?.summary) {
 			result.summary = {
-				...defaultResumeData.summary,
+				...result.summary,
 				content: `<p>${jsonResume.basics.summary}</p>`,
 				hidden: false,
 			};
@@ -398,7 +396,7 @@ export class JSONResumeImporter {
 		// Map work to experience
 		if (jsonResume.work && jsonResume.work.length > 0) {
 			result.sections.experience = {
-				...defaultResumeData.sections.experience,
+				...result.sections.experience,
 				items: jsonResume.work
 					.filter((work) => work.name || work.position)
 					.map((work) => ({
@@ -417,7 +415,7 @@ export class JSONResumeImporter {
 		// Map education
 		if (jsonResume.education && jsonResume.education.length > 0) {
 			result.sections.education = {
-				...defaultResumeData.sections.education,
+				...result.sections.education,
 				items: jsonResume.education
 					.filter((edu) => edu.institution)
 					.map((edu) => ({
@@ -438,7 +436,7 @@ export class JSONResumeImporter {
 		// Map projects
 		if (jsonResume.projects && jsonResume.projects.length > 0) {
 			result.sections.projects = {
-				...defaultResumeData.sections.projects,
+				...result.sections.projects,
 				items: jsonResume.projects
 					.filter((project) => project.name)
 					.map((project) => ({
@@ -455,7 +453,7 @@ export class JSONResumeImporter {
 		// Map skills
 		if (jsonResume.skills && jsonResume.skills.length > 0) {
 			result.sections.skills = {
-				...defaultResumeData.sections.skills,
+				...result.sections.skills,
 				items: jsonResume.skills
 					.filter((skill) => skill.name)
 					.map((skill) => ({
@@ -473,7 +471,7 @@ export class JSONResumeImporter {
 		// Map languages
 		if (jsonResume.languages && jsonResume.languages.length > 0) {
 			result.sections.languages = {
-				...defaultResumeData.sections.languages,
+				...result.sections.languages,
 				items: jsonResume.languages
 					.filter((lang) => lang.language)
 					.map((lang) => ({
@@ -489,7 +487,7 @@ export class JSONResumeImporter {
 		// Map interests
 		if (jsonResume.interests && jsonResume.interests.length > 0) {
 			result.sections.interests = {
-				...defaultResumeData.sections.interests,
+				...result.sections.interests,
 				items: jsonResume.interests
 					.filter((interest) => interest.name)
 					.map((interest) => ({
@@ -505,7 +503,7 @@ export class JSONResumeImporter {
 		// Map awards
 		if (jsonResume.awards && jsonResume.awards.length > 0) {
 			result.sections.awards = {
-				...defaultResumeData.sections.awards,
+				...result.sections.awards,
 				items: jsonResume.awards
 					.filter((award) => award.title)
 					.map((award) => ({
@@ -523,7 +521,7 @@ export class JSONResumeImporter {
 		// Map certificates
 		if (jsonResume.certificates && jsonResume.certificates.length > 0) {
 			result.sections.certifications = {
-				...defaultResumeData.sections.certifications,
+				...result.sections.certifications,
 				items: jsonResume.certificates
 					.filter((cert) => cert.name)
 					.map((cert) => ({
@@ -541,7 +539,7 @@ export class JSONResumeImporter {
 		// Map publications
 		if (jsonResume.publications && jsonResume.publications.length > 0) {
 			result.sections.publications = {
-				...defaultResumeData.sections.publications,
+				...result.sections.publications,
 				items: jsonResume.publications
 					.filter((pub) => pub.name)
 					.map((pub) => ({
@@ -559,7 +557,7 @@ export class JSONResumeImporter {
 		// Map volunteer
 		if (jsonResume.volunteer && jsonResume.volunteer.length > 0) {
 			result.sections.volunteer = {
-				...defaultResumeData.sections.volunteer,
+				...result.sections.volunteer,
 				items: jsonResume.volunteer
 					.filter((vol) => vol.organization)
 					.map((vol) => ({
@@ -577,7 +575,7 @@ export class JSONResumeImporter {
 		// Map references
 		if (jsonResume.references && jsonResume.references.length > 0) {
 			result.sections.references = {
-				...defaultResumeData.sections.references,
+				...result.sections.references,
 				items: jsonResume.references
 					.filter((ref) => ref.name || ref.reference)
 					.map((ref) => ({
@@ -595,7 +593,7 @@ export class JSONResumeImporter {
 		// Map profiles (from basics.profiles) to profiles section
 		if (jsonResume.basics?.profiles && jsonResume.basics.profiles.length > 0) {
 			result.sections.profiles = {
-				...defaultResumeData.sections.profiles,
+				...result.sections.profiles,
 				items: jsonResume.basics.profiles
 					.filter((profile) => profile.network)
 					.map((profile) => ({
@@ -609,10 +607,10 @@ export class JSONResumeImporter {
 			};
 		}
 
-		return resumeDataSchema.parse(result);
+		return resumeViewSchema.parse(result);
 	}
 
-	parse(json: string): ResumeData {
+	parse(json: string): ResumeView {
 		try {
 			const jsonResume = jsonResumeSchema.parse(JSON.parse(json));
 			return this.convert(jsonResume);

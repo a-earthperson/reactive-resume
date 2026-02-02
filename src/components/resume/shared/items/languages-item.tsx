@@ -1,4 +1,4 @@
-import type { SectionItem } from "@/schema/resume/data";
+import type { SectionItem } from "@/schema/resume/view";
 import { cn } from "@/utils/style";
 import { PageLevel } from "../page-level";
 

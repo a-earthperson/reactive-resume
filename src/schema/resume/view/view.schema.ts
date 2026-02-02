@@ -28,6 +28,7 @@ import {
 	interestsSectionDataSchema,
 	languageItemDataSchema,
 	languagesSectionDataSchema,
+	listItemDataSchema,
 	metadataDataSchema,
 	pictureDataSchema,
 	profileItemDataSchema,
@@ -48,6 +49,7 @@ import {
 } from "../data/index";
 import {
 	awardItemStylesSchema,
+	baseItemStylesSchema,
 	certificationItemStylesSchema,
 	customFieldStylesSchema,
 	customSectionStylesSchema,
@@ -183,6 +185,29 @@ export const referenceItemViewSchema = referenceItemDataSchema.merge(referenceIt
 
 /**
  * @remarks
+ * View schema for summary items in custom sections, combining content with base item styles.
+ * @example { id: "summary-1", content: "", hidden: false }
+ */
+export const summaryItemViewSchema = listItemDataSchema
+	.extend({
+		content: z.string().describe("Rich text content for the summary item."),
+	})
+	.merge(baseItemStylesSchema);
+
+/**
+ * @remarks
+ * View schema for cover letter items in custom sections, combining content with base item styles.
+ * @example { id: "cover-letter-1", recipient: "", content: "", hidden: false }
+ */
+export const coverLetterItemViewSchema = listItemDataSchema
+	.extend({
+		recipient: z.string().describe("Rich text content for the cover letter recipient."),
+		content: z.string().describe("Rich text content for the cover letter body."),
+	})
+	.merge(baseItemStylesSchema);
+
+/**
+ * @remarks
  * View schema for the profiles section, combining section data and styles.
  * @example { title: "", items: [], hidden: false, columns: 1 }
  */
@@ -315,6 +340,7 @@ export const sectionsViewSchema = sectionsDataSchema.extend({
  * @example { id: "custom-item-1", hidden: false }
  */
 export const customSectionItemViewSchema = z.union([
+	summaryItemViewSchema,
 	profileItemViewSchema,
 	experienceItemViewSchema,
 	educationItemViewSchema,
@@ -327,7 +353,15 @@ export const customSectionItemViewSchema = z.union([
 	publicationItemViewSchema,
 	volunteerItemViewSchema,
 	referenceItemViewSchema,
+	coverLetterItemViewSchema,
 ]);
+
+/**
+ * @remarks
+ * Validates the supported section identifiers for custom sections.
+ * @example "summary"
+ */
+export const customSectionTypeSchema = z.union([sectionTypeSchema, z.literal("summary"), z.literal("cover-letter")]);
 
 /**
  * @remarks
@@ -335,7 +369,10 @@ export const customSectionItemViewSchema = z.union([
  * @example { id: "custom-1", title: "", type: "experience", hidden: false, columns: 1 }
  */
 export const customSectionViewSchema = customSectionDataSchema
-	.extend({ items: z.array(customSectionItemViewSchema) })
+	.extend({
+		type: customSectionTypeSchema,
+		items: z.array(customSectionItemViewSchema),
+	})
 	.merge(customSectionStylesSchema);
 
 /**

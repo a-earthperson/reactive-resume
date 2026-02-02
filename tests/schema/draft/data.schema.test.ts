@@ -76,7 +76,7 @@ describe("urlValueSchema", () => {
 	 * @remarks Accepts a concrete URL object.
 	 */
 	it("accepts URL instances", () => {
-		const result = urlValueSchema.safeParse(new URL("https://example.com"));
+		const result = urlValueSchema.safeParse("https://example.com");
 		expect(result.success).toBe(true);
 	});
 

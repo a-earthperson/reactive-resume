@@ -16,12 +16,12 @@
 import z from "zod";
 
 /**
- * @remarks Accepts URL values or empty strings for iterative drafting.
+ * @remarks Accepts URL values formatted as strings for iterative drafting.
  * @example ""
  * @example "https://example.com"
  */
 export const urlValueSchema = z
-	.union([z.string(), z.instanceof(URL)])
+	.string()
 	.describe("The URL to show as a link. Must be a valid URL with a protocol (http:// or https://).");
 
 /**

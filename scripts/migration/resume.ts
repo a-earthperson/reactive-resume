@@ -4,7 +4,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool, type QueryResult } from "pg";
 import { schema } from "@/integrations/drizzle";
 import { ReactiveResumeV4JSONImporter } from "@/integrations/import/reactive-resume-v4-json";
-import { defaultResumeData } from "@/schema/resume/data";
+import { resumeViewFactory } from "@/schema/resume/view";
 import { generateId } from "@/utils/string";
 
 // Types for the production database
@@ -360,14 +360,14 @@ export async function migrateResumes() {
 		try {
 			const resumesToInsertData = resumesToInsert.map(({ resume, newUserId }) => {
 				// Transform the data using the V4 importer
-				let transformedData = defaultResumeData;
+				let transformedData = resumeViewFactory.defaults();
 				try {
 					const dataJson = typeof resume.data === "string" ? resume.data : JSON.stringify(resume.data);
 					transformedData = importer.parse(dataJson);
 				} catch (error) {
 					console.error(`⚠️  Failed to parse resume data for resume ${resume.id}, using default data:`, error);
 					// Use default data if parsing fails
-					transformedData = defaultResumeData;
+					transformedData = resumeViewFactory.defaults();
 				}
 
 				// Map visibility to isPublic (visibility === "public" -> isPublic = true)

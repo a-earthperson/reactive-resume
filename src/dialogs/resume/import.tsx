@@ -20,7 +20,7 @@ import { JSONResumeImporter } from "@/integrations/import/json-resume";
 import { ReactiveResumeJSONImporter } from "@/integrations/import/reactive-resume-json";
 import { ReactiveResumeV4JSONImporter } from "@/integrations/import/reactive-resume-v4-json";
 import { client, orpc } from "@/integrations/orpc/client";
-import type { ResumeData } from "@/schema/resume/data";
+import type { ResumeView } from "@/schema/resume/view";
 import { cn } from "@/utils/style";
 import { type DialogProps, useDialogStore } from "../store";
 
@@ -111,7 +111,7 @@ export function ImportResumeDialog(_: DialogProps<"resume.import">) {
 		});
 
 		try {
-			let data: ResumeData | undefined;
+			let data: ResumeView | undefined;
 
 			if (values.type === "json-resume-json") {
 				const json = await values.file.text();

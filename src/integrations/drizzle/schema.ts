@@ -1,6 +1,6 @@
 import * as pg from "drizzle-orm/pg-core";
 import type { DraftData } from "@/schema/draft/data";
-import { defaultResumeData, type ResumeData } from "@/schema/resume/data";
+import { type ResumeView, resumeViewFactory } from "@/schema/resume/view";
 import { generateId } from "@/utils/string";
 
 export const user = pg.pgTable(
@@ -177,8 +177,8 @@ export const resume = pg.pgTable(
 		data: pg
 			.jsonb("data")
 			.notNull()
-			.$type<ResumeData>()
-			.$defaultFn(() => defaultResumeData),
+			.$type<ResumeView>()
+			.$defaultFn(() => resumeViewFactory.defaults()),
 		userId: pg
 			.uuid("user_id")
 			.notNull()

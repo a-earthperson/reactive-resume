@@ -1,5 +1,5 @@
 import { TiptapContent } from "@/components/input/rich-input";
-import type { SectionItem } from "@/schema/resume/data";
+import type { SectionItem } from "@/schema/resume/view";
 import { stripHtml } from "@/utils/string";
 import { cn } from "@/utils/style";
 import { LinkedTitle } from "../linked-title";

@@ -15,7 +15,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { orpc } from "@/integrations/orpc/client";
-import { pictureSchema } from "@/schema/resume/data";
+import { pictureViewSchema as pictureSchema } from "@/schema/resume/view";
 import { SectionBase } from "../shared/section-base";
 
 export function PictureSectionBuilder() {

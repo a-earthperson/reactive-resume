@@ -8,7 +8,7 @@ import { useTheme } from "@/components/theme/provider";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
-import { metadataSchema } from "@/schema/resume/data";
+import { metadataViewSchema } from "@/schema/resume/view";
 import { SectionBase } from "../shared/section-base";
 
 const CSSMonacoEditor = lazy(() => import("./css-editor"));
@@ -21,7 +21,7 @@ export function CSSSectionBuilder() {
 	);
 }
 
-const formSchema = metadataSchema.shape.css;
+const formSchema = metadataViewSchema.shape.css;
 
 type FormValues = z.infer<typeof formSchema>;
 

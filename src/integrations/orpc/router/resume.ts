@@ -1,6 +1,6 @@
 import z from "zod";
-import { resumeDataSchema } from "@/schema/resume/data";
-import { sampleResumeData } from "@/schema/resume/sample";
+import { sampleResume as sampleResumeView } from "@/schema/resume/sample";
+import { resumeViewSchema } from "@/schema/resume/view";
 import { generateRandomName, slugify } from "@/utils/string";
 import { protectedProcedure, publicProcedure, serverOnlyProcedure } from "../context";
 import { resumeService } from "../services/resume";
@@ -109,7 +109,7 @@ export const resumeRouter = {
 				name: z.string(),
 				slug: z.string(),
 				tags: z.array(z.string()),
-				data: resumeDataSchema,
+				data: resumeViewSchema,
 				isPublic: z.boolean(),
 				isLocked: z.boolean(),
 				hasPassword: z.boolean(),
@@ -141,7 +141,7 @@ export const resumeRouter = {
 				name: z.string(),
 				slug: z.string(),
 				tags: z.array(z.string()),
-				data: resumeDataSchema,
+				data: resumeViewSchema,
 				isPublic: z.boolean(),
 				isLocked: z.boolean(),
 			}),
@@ -180,7 +180,7 @@ export const resumeRouter = {
 				tags: input.tags,
 				locale: context.locale,
 				userId: context.user.id,
-				data: input.withSampleData ? sampleResumeData : undefined,
+				data: input.withSampleData ? sampleResumeView : undefined,
 			});
 		}),
 
@@ -192,7 +192,7 @@ export const resumeRouter = {
 			summary: "Import a resume",
 			description: "Import a resume from a file.",
 		})
-		.input(z.object({ data: resumeDataSchema }))
+		.input(z.object({ data: resumeViewSchema }))
 		.output(z.string().describe("The ID of the imported resume."))
 		.errors({
 			RESUME_SLUG_ALREADY_EXISTS: {
@@ -228,7 +228,7 @@ export const resumeRouter = {
 				name: z.string().optional(),
 				slug: z.string().optional(),
 				tags: z.array(z.string()).optional(),
-				data: resumeDataSchema.optional(),
+				data: resumeViewSchema.optional(),
 				isPublic: z.boolean().optional(),
 			}),
 		)

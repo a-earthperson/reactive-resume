@@ -13,7 +13,7 @@ import { Slider } from "@/components/ui/slider";
 import type { DialogProps } from "@/dialogs/store";
 import { useDialogStore } from "@/dialogs/store";
 import { useFormBlocker } from "@/hooks/use-form-blocker";
-import { languageItemSchema } from "@/schema/resume/data";
+import { languageItemViewSchema as languageItemSchema } from "@/schema/resume/view";
 import { generateId } from "@/utils/string";
 
 const formSchema = languageItemSchema;

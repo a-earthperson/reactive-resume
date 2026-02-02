@@ -5,7 +5,7 @@ import { match } from "ts-pattern";
 import { useResizeObserver } from "usehooks-ts";
 import type z from "zod";
 import { pageDimensionsAsPixels } from "@/schema/page";
-import type { pageLayoutSchema } from "@/schema/resume/data";
+import type { pageLayoutSchema } from "@/schema/resume/styles";
 import type { Template } from "@/schema/templates";
 import { sanitizeCss } from "@/utils/sanitize";
 import { cn } from "@/utils/style";

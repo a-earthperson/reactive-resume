@@ -11,7 +11,7 @@ import { useResumeStore } from "@/components/resume/store/resume";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { colorDesignSchema, levelDesignSchema } from "@/schema/resume/data";
+import { colorDesignSchema, levelDesignSchema } from "@/schema/resume/styles";
 import { cn } from "@/utils/style";
 import { SectionBase } from "../shared/section-base";
 

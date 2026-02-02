@@ -4,8 +4,7 @@ import { get } from "es-toolkit/compat";
 import { match } from "ts-pattern";
 import { schema } from "@/integrations/drizzle";
 import { db } from "@/integrations/drizzle/client";
-import type { ResumeData } from "@/schema/resume/data";
-import { defaultResumeData } from "@/schema/resume/data";
+import { type ResumeView, resumeViewFactory } from "@/schema/resume/view";
 import { env } from "@/utils/env";
 import type { Locale } from "@/utils/locale";
 import { hashPassword } from "@/utils/password";
@@ -232,11 +231,11 @@ export const resumeService = {
 		slug: string;
 		tags: string[];
 		locale: Locale;
-		data?: ResumeData;
+		data?: ResumeView;
 	}): Promise<string> => {
 		const id = generateId();
 
-		input.data = input.data ?? defaultResumeData;
+		input.data = input.data ?? resumeViewFactory.defaults();
 		input.data.metadata.page.locale = input.locale;
 
 		try {
@@ -267,7 +266,7 @@ export const resumeService = {
 		name?: string;
 		slug?: string;
 		tags?: string[];
-		data?: ResumeData;
+		data?: ResumeView;
 		isPublic?: boolean;
 	}): Promise<void> => {
 		const [resume] = await db

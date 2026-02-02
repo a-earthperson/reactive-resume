@@ -25,7 +25,7 @@ const defaultStyles = resumeStylesSchema.parse(defaultStylesJson);
 /**
  * @remarks Strongly-typed default styles payload derived from JSON.
  */
-export type DefaultStyles = z.infer<typeof resumeStylesSchema>;
+export type ResumeStyles = z.infer<typeof resumeStylesSchema>;
 
 /**
  * @remarks Deep clone helper for JSON-based defaults to avoid shared mutation.
@@ -38,7 +38,7 @@ const cloneDefaults = <T>(value: T): T => structuredClone(value);
  * @remarks Exposes read-only defaults without cloning (internal use only).
  * @returns The parsed defaults payload.
  */
-const getDefaults = (): DefaultStyles => defaultStyles;
+const getDefaults = (): ResumeStyles => defaultStyles;
 
 /**
  * @remarks
@@ -50,7 +50,7 @@ export const resumeStylesFactory = {
 	 * @remarks Returns the full defaults payload as a deep clone.
 	 * @returns A cloned defaults object.
 	 */
-	defaults: (): DefaultStyles => cloneDefaults(getDefaults()),
+	defaults: (): ResumeStyles => cloneDefaults(getDefaults()),
 
 	/**
 	 * @remarks Item-level style defaults.

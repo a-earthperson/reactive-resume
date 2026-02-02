@@ -6,7 +6,7 @@ import { useResumeStore } from "@/components/resume/store/resume";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { Slider } from "@/components/ui/slider";
-import { metadataSchema } from "@/schema/resume/data";
+import { metadataViewSchema } from "@/schema/resume/view";
 import { SectionBase } from "../../shared/section-base";
 import { LayoutPages } from "./pages";
 
@@ -19,7 +19,7 @@ export function LayoutSectionBuilder() {
 	);
 }
 
-const formSchema = metadataSchema.shape.layout.omit({ pages: true });
+const formSchema = metadataViewSchema.shape.layout.omit({ pages: true });
 
 type FormValues = z.infer<typeof formSchema>;
 

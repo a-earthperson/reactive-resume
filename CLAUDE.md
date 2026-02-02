@@ -74,10 +74,10 @@ pnpm knip
 - **query/** - TanStack Query client configuration
 - **ai/** - AI provider integrations (OpenAI, Anthropic, Google Gemini, Ollama)
 
-### Resume Data Model
+### Resume View Model
 
-The resume schema is defined in `src/schema/resume/data.ts`. Key concepts:
-- **ResumeData** - Complete resume data including basics, sections, customSections, metadata
+The resume view schema is defined in `src/schema/resume/view/`. Key concepts:
+- **ResumeView** - Zipped resume view combining data and styles (basics, sections, customSections, metadata)
 - **Sections** - Built-in sections (profiles, experience, education, skills, etc.)
 - **CustomSections** - User-created sections that follow one of the built-in section types
 - **Metadata** - Template, layout, typography, design settings, custom CSS
@@ -96,7 +96,7 @@ Templates are React components in `src/components/resume/templates/`. Each templ
 
 Defined in `src/integrations/drizzle/schema.ts`:
 - `user`, `session`, `account`, `verification`, `twoFactor`, `passkey`, `apikey` - Better Auth tables
-- `resume` - Stores Resume Data as JSONB (defined in `src/schema/resume/data.ts`)
+- `resume` - Stores Resume View as JSONB (defined in `src/schema/resume/view/`)
 - `draft` - Stores Draft Data as JSONB (defined in `src/schema/draft/`)
 - `resumeStatistics` - Views/Download for Resume Tracking
 

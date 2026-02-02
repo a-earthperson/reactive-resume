@@ -16,7 +16,7 @@ import { Slider } from "@/components/ui/slider";
 import type { DialogProps } from "@/dialogs/store";
 import { useDialogStore } from "@/dialogs/store";
 import { useFormBlocker } from "@/hooks/use-form-blocker";
-import { skillItemSchema } from "@/schema/resume/data";
+import { skillItemViewSchema as skillItemSchema } from "@/schema/resume/view";
 import { generateId } from "@/utils/string";
 import { cn } from "@/utils/style";
 

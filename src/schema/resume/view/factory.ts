@@ -16,7 +16,7 @@
  * @see {@link ./view.types | Resume View types}
  */
 import type { DraftData, DraftResume } from "../data/index";
-import { draftFactory } from "../data/index";
+import { draftFactory, sectionTypeSchema } from "../data/index";
 import type { DefaultStyles } from "../styles/styles.factory";
 import { resumeStylesFactory } from "../styles/styles.factory";
 import type { Resume as ResumeStylesNamespace } from "../styles/styles.types";
@@ -96,6 +96,14 @@ const mergeItems = <TItem extends Record<string, unknown>, TStyle extends Record
 	items: TItem[],
 	style: TStyle,
 ) => items.map((item) => ({ ...item, ...style }));
+
+/**
+ * @remarks Resolves whether a custom section type is supported by DraftResume.
+ * @param value - The custom section type to inspect.
+ * @returns True if the type is a DraftResume section type.
+ */
+const isDraftSectionType = (value: ResumeView["customSections"][number]["type"]): value is DraftResume.SectionType =>
+	sectionTypeSchema.options.includes(value as DraftResume.SectionType);
 
 /**
  * @remarks Combines section data, section styles, and item styles into a view section.
@@ -455,12 +463,14 @@ export const unzipResumeView = (view: ResumeView): UnzipOutput => {
 				items: view.sections.references.items.map((item) => stripItemStyle(item) as DraftResume.ReferenceItemData),
 			},
 		},
-		customSections: view.customSections.map((section) => ({
-			id: section.id,
-			title: section.title,
-			type: section.type,
-			items: section.items.map((item) => stripItemStyle(item) as DraftResume.CustomSectionItemData),
-		})),
+		customSections: view.customSections
+			.filter((section) => isDraftSectionType(section.type))
+			.map((section) => ({
+				id: section.id,
+				title: section.title,
+				type: section.type,
+				items: section.items.map((item) => stripItemStyle(item) as DraftResume.CustomSectionItemData),
+			})),
 		metadata: { notes: view.metadata.notes },
 	};
 

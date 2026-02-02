@@ -14,6 +14,8 @@
  * @see {@link ./data.schema | DraftResume schema}
  * @see {@link ./data.types | DraftResume types}
  */
+
+export * from "./data.factory";
+export * from "./data.samples";
 export * from "./data.schema";
 export * from "./data.types";
-export * from "./factory";

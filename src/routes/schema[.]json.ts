@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import z from "zod";
-import { resumeDataSchema } from "@/schema/resume/data";
+import { resumeViewSchema } from "@/schema/resume/view";
 
 function handler() {
-	const resumeDataJSONSchema = z.toJSONSchema(resumeDataSchema);
+	const resumeDataJSONSchema = z.toJSONSchema(resumeViewSchema);
 
 	return Response.json(resumeDataJSONSchema, {
 		status: 200,

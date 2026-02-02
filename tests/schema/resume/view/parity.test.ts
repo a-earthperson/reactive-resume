@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { type DraftData, draftFactory } from "@/schema/draft/data";
-import { resumeDataSchema } from "@/schema/resume/data.ts";
-import { sampleResumeData } from "@/schema/resume/sample";
+import { sampleDraftData } from "@/schema/draft/data/sample";
 import { resumeStylesFactory } from "@/schema/resume/styles";
 import { resumeViewFactory, resumeViewSchema, unzipResumeView, zipResumeView } from "@/schema/resume/view";
 
@@ -22,11 +21,9 @@ const sectionTypes = [
 	"references",
 ] as const satisfies SectionKey[];
 
-const iconSectionTypes = new Set<SectionKey>(["profiles", "skills", "interests"]);
-
 /**
  * @remarks
- * Seeds the required minimal string fields for ResumeData validation.
+ * Seeds the required minimal string fields for ResumeView validation.
  * @param type - The section type to seed.
  * @param item - The draft item to mutate.
  * @returns The same item with required fields populated.
@@ -74,7 +71,7 @@ const requiredFieldSetters: {
 
 /**
  * @remarks
- * Applies required field defaults to satisfy ResumeData validation.
+ * Applies required field defaults to satisfy ResumeView validation.
  */
 const seedRequiredFields = <T extends SectionKey>(
 	type: T,
@@ -99,7 +96,7 @@ const setSectionItem = <T extends SectionKey>(
 /**
  * @remarks
  * Builds a DraftData payload with at least one valid item in every section and custom section.
- * This ensures parity tests exercise every item and section type while satisfying ResumeData requirements.
+ * This ensures view tests exercise every item and section type while satisfying ResumeView requirements.
  */
 const createFullDraft = (): DraftData => {
 	const data = draftFactory.draft.empty();
@@ -163,111 +160,40 @@ const createFullView = () => {
 
 /**
  * @remarks
- * Asserts that two objects expose identical key sets for parity checks.
- * @param left - The first object to compare.
- * @param right - The second object to compare.
+ * Validates that ResumeView conforms to the expected view contract.
  */
-const assertSameKeys = (left: Record<string, unknown>, right: Record<string, unknown>) => {
-	expect(Object.keys(left).sort()).toEqual(Object.keys(right).sort());
-};
-
-/**
- * @remarks
- * Validates that ResumeView is a drop-in structural replacement for ResumeData.
- */
-describe("ResumeData <-> ResumeView parity", () => {
+describe("ResumeView schema contract", () => {
 	/**
 	 * @remarks
-	 * Ensures a ResumeData sample payload is accepted by the ResumeView schema.
+	 * Ensures a DraftData sample payload is accepted once zipped into a ResumeView.
 	 */
-	it("accepts sample ResumeData in the ResumeView schema", () => {
-		const result = resumeViewSchema.safeParse(sampleResumeData);
+	it("accepts sample DraftData in the ResumeView schema", () => {
+		const view = resumeViewFactory.zip({ data: sampleDraftData, styles: resumeStylesFactory.defaults() });
+		const result = resumeViewSchema.safeParse(view);
 		expect(result.success).toBe(true);
 	});
 
 	/**
 	 * @remarks
-	 * Ensures ResumeView defaults satisfy the ResumeData schema.
+	 * Ensures ResumeView defaults satisfy the ResumeView schema.
 	 */
-	it("accepts ResumeView defaults in the ResumeData schema", () => {
+	it("accepts ResumeView defaults in the ResumeView schema", () => {
 		const view = resumeViewFactory.defaults();
-		const result = resumeDataSchema.safeParse(view);
+		const result = resumeViewSchema.safeParse(view);
 		expect(result.success).toBe(true);
 	});
 
 	/**
 	 * @remarks
-	 * Ensures both schemas parse the same fully populated view payload identically.
+	 * Ensures a ResumeView roundtrips through unzip/zip without losing parity.
 	 */
-	it("produces identical parsed outputs across ResumeData and ResumeView schemas", () => {
-		const { view } = createFullView();
-		const viewParsed = resumeViewSchema.parse(view);
-		const dataParsed = resumeDataSchema.parse(view);
-
-		expect(viewParsed).toEqual(dataParsed);
-	});
-
-	/**
-	 * @remarks
-	 * Ensures nested key parity across all sections and custom sections.
-	 */
-	it("matches key sets for sections and custom section items", () => {
-		const { view } = createFullView();
-		const viewParsed = resumeViewSchema.parse(view);
-		const dataParsed = resumeDataSchema.parse(view);
-
-		assertSameKeys(viewParsed, dataParsed);
-		assertSameKeys(viewParsed.picture, dataParsed.picture);
-		assertSameKeys(viewParsed.basics, dataParsed.basics);
-		assertSameKeys(viewParsed.summary, dataParsed.summary);
-		assertSameKeys(viewParsed.sections, dataParsed.sections);
-		assertSameKeys(viewParsed.metadata, dataParsed.metadata);
-
-		for (const type of sectionTypes) {
-			assertSameKeys(
-				viewParsed.sections[type] as Record<string, unknown>,
-				dataParsed.sections[type] as Record<string, unknown>,
-			);
-
-			const viewItem = viewParsed.sections[type].items[0] as Record<string, unknown>;
-			const dataItem = dataParsed.sections[type].items[0] as Record<string, unknown>;
-
-			assertSameKeys(viewItem, dataItem);
-
-			if (iconSectionTypes.has(type)) {
-				expect("icon" in viewItem).toBe(true);
-			} else {
-				expect("icon" in viewItem).toBe(false);
-			}
-		}
-
-		for (let index = 0; index < viewParsed.customSections.length; index += 1) {
-			const viewSection = viewParsed.customSections[index] as Record<string, unknown>;
-			const dataSection = dataParsed.customSections[index] as Record<string, unknown>;
-
-			assertSameKeys(viewSection, dataSection);
-
-			const viewItem = (viewParsed.customSections[index].items[0] ?? {}) as Record<string, unknown>;
-			const dataItem = (dataParsed.customSections[index].items[0] ?? {}) as Record<string, unknown>;
-
-			assertSameKeys(viewItem, dataItem);
-		}
-	});
-
-	/**
-	 * @remarks
-	 * Ensures a ResumeData-compatible view roundtrips through unzip/zip without losing parity.
-	 */
-	it("roundtrips ResumeData-compatible views without losing parity", () => {
+	it("roundtrips ResumeView payloads without losing parity", () => {
 		const { view } = createFullView();
 		const roundTrip = zipResumeView(unzipResumeView(view));
 
 		const viewParsed = resumeViewSchema.parse(view);
 		const roundTripParsed = resumeViewSchema.parse(roundTrip);
-		const dataParsed = resumeDataSchema.parse(view);
-		const roundTripDataParsed = resumeDataSchema.parse(roundTrip);
 
 		expect(roundTripParsed).toEqual(viewParsed);
-		expect(roundTripDataParsed).toEqual(dataParsed);
 	});
 });

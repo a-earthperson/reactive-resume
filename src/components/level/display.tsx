@@ -1,6 +1,6 @@
 import { t } from "@lingui/core/macro";
 import type z from "zod";
-import type { levelDesignSchema } from "@/schema/resume/data";
+import type { levelDesignSchema } from "@/schema/resume/styles";
 import { cn } from "@/utils/style";
 import { PageIcon } from "../resume/shared/page-icon";
 

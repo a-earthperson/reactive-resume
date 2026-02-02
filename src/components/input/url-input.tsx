@@ -3,7 +3,7 @@ import { Trans } from "@lingui/react/macro";
 import { TagIcon } from "@phosphor-icons/react";
 import { useCallback, useMemo } from "react";
 import type z from "zod";
-import type { urlSchema } from "@/schema/resume/data";
+import type { labeledUrlSchema as urlSchema } from "@/schema/draft/data";
 import { cn } from "@/utils/style";
 import { Input } from "../ui/input";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput, InputGroupText } from "../ui/input-group";

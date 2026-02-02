@@ -1,22 +1,22 @@
 import z from "zod";
 import { create } from "zustand/react";
 import {
-	awardItemSchema,
-	certificationItemSchema,
-	coverLetterItemSchema,
-	customSectionSchema,
-	educationItemSchema,
-	experienceItemSchema,
-	interestItemSchema,
-	languageItemSchema,
-	profileItemSchema,
-	projectItemSchema,
-	publicationItemSchema,
-	referenceItemSchema,
-	skillItemSchema,
-	summaryItemSchema,
-	volunteerItemSchema,
-} from "@/schema/resume/data";
+	awardItemViewSchema as awardItemSchema,
+	certificationItemViewSchema as certificationItemSchema,
+	coverLetterItemViewSchema as coverLetterItemSchema,
+	customSectionViewSchema as customSectionSchema,
+	educationItemViewSchema as educationItemSchema,
+	experienceItemViewSchema as experienceItemSchema,
+	interestItemViewSchema as interestItemSchema,
+	languageItemViewSchema as languageItemSchema,
+	profileItemViewSchema as profileItemSchema,
+	projectItemViewSchema as projectItemSchema,
+	publicationItemViewSchema as publicationItemSchema,
+	referenceItemViewSchema as referenceItemSchema,
+	skillItemViewSchema as skillItemSchema,
+	summaryItemViewSchema as summaryItemSchema,
+	volunteerItemViewSchema as volunteerItemSchema,
+} from "@/schema/resume/view";
 
 const dialogTypeSchema = z.discriminatedUnion("type", [
 	z.object({ type: z.literal("auth.change-password"), data: z.undefined() }),

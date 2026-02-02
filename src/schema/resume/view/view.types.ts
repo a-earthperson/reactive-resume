@@ -14,8 +14,10 @@ import type {
 	basicsViewSchema,
 	certificationItemViewSchema,
 	certificationsSectionViewSchema,
+	coverLetterItemViewSchema,
 	customFieldViewSchema,
 	customSectionItemViewSchema,
+	customSectionTypeSchema,
 	customSectionViewSchema,
 	educationItemViewSchema,
 	educationSectionViewSchema,
@@ -39,6 +41,7 @@ import type {
 	sectionsViewSchema,
 	skillItemViewSchema,
 	skillsSectionViewSchema,
+	summaryItemViewSchema,
 	summaryViewSchema,
 	viewSectionTypeSchema,
 	volunteerItemViewSchema,
@@ -151,6 +154,18 @@ export namespace Resume {
 		export type ReferenceItemView = ZodInfer<typeof referenceItemViewSchema>;
 
 		/**
+		 * @remarks View type for summary items in custom sections.
+		 * @example { id: "summary-1", content: "", hidden: false }
+		 */
+		export type SummaryItemView = ZodInfer<typeof summaryItemViewSchema>;
+
+		/**
+		 * @remarks View type for cover letter items in custom sections.
+		 * @example { id: "cover-letter-1", recipient: "", content: "", hidden: false }
+		 */
+		export type CoverLetterItemView = ZodInfer<typeof coverLetterItemViewSchema>;
+
+		/**
 		 * @remarks View type for profiles section.
 		 * @example { title: "", items: [], hidden: false, columns: 1 }
 		 */
@@ -241,6 +256,12 @@ export namespace Resume {
 		export type CustomSectionView = ZodInfer<typeof customSectionViewSchema>;
 
 		/**
+		 * @remarks View type for custom section identifiers.
+		 * @example "summary"
+		 */
+		export type CustomSectionType = ZodInfer<typeof customSectionTypeSchema>;
+
+		/**
 		 * @remarks View type for metadata.
 		 * @example { notes: "", template: "onyx", layout: { sidebarWidth: 35, pages: [] } }
 		 */
@@ -251,6 +272,12 @@ export namespace Resume {
 		 * @example "experience"
 		 */
 		export type SectionType = ZodInfer<typeof viewSectionTypeSchema>;
+
+		/**
+		 * @remarks View type for section items by section identifier.
+		 * @example { id: "exp-1", company: "", hidden: false }
+		 */
+		export type SectionItem<TSection extends SectionType = SectionType> = SectionsView[TSection]["items"][number];
 
 		/**
 		 * @remarks Top-level Resume View type.
@@ -265,3 +292,38 @@ export namespace Resume {
  * @see Resume.View.ResumeView
  */
 export type ResumeView = Resume.View.ResumeView;
+
+/**
+ * @remarks Alias for built-in section identifiers.
+ */
+export type SectionType = Resume.View.SectionType;
+
+/**
+ * @remarks Alias for custom section identifiers (includes summary and cover letter).
+ */
+export type CustomSectionType = Resume.View.CustomSectionType;
+
+/**
+ * @remarks Alias for section items by section identifier.
+ */
+export type SectionItem<TSection extends SectionType = SectionType> = Resume.View.SectionItem<TSection>;
+
+/**
+ * @remarks Alias for custom section items.
+ */
+export type CustomSectionItem = Resume.View.CustomSectionItemView;
+
+/**
+ * @remarks Alias for custom section payloads.
+ */
+export type CustomSection = Resume.View.CustomSectionView;
+
+/**
+ * @remarks Alias for summary custom section items.
+ */
+export type SummaryItem = Resume.View.SummaryItemView;
+
+/**
+ * @remarks Alias for cover letter custom section items.
+ */
+export type CoverLetterItem = Resume.View.CoverLetterItemView;
