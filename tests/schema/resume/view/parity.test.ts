@@ -167,7 +167,7 @@ describe("ResumeView schema contract", () => {
 	 * Ensures a DraftData sample payload is accepted once zipped into a ResumeView.
 	 */
 	it("accepts sample DraftData in the ResumeView schema", () => {
-		const view = resumeViewFactory.zip({ data: sampleDraftData, styles: resumeStylesFactory.defaults() });
+		const view = resumeViewFactory.zip({ data: sampleDraftData[0], styles: resumeStylesFactory.defaults() });
 		const result = resumeViewSchema.safeParse(view);
 		expect(result.success).toBe(true);
 	});
