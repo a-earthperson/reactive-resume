@@ -8,7 +8,7 @@ import { useTheme } from "@/components/theme/provider";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
-import { metadataViewSchema } from "@/schema/resume/view";
+import { metadataViewSchema } from "@/schema/resume";
 import { SectionBase } from "../shared/section-base";
 
 const CSSMonacoEditor = lazy(() => import("./css-editor"));

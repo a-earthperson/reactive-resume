@@ -1,4 +1,4 @@
-import type { ResumeView } from "./view";
+import type { ResumeView } from "./index.ts";
 
 export const sampleResume: ResumeView = {
 	picture: {

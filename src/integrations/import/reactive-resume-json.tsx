@@ -1,5 +1,5 @@
 import { flattenError, ZodError } from "zod";
-import { type ResumeView, resumeViewSchema } from "@/schema/resume/view";
+import { type ResumeView, resumeViewSchema } from "@/schema/resume";
 
 export class ReactiveResumeJSONImporter {
 	parse(json: string): ResumeView {

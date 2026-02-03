@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { type DraftData, draftFactory, sampleDraftData } from "@/schema/draft/data";
+import { type DraftData, draftFactory, sampleDraftData } from "@/schema/resume/data";
 import { resumeStylesFactory } from "@/schema/resume/styles";
-import { resumeViewFactory, resumeViewSchema, unzipResumeView, zipResumeView } from "@/schema/resume/view";
+import { resumeViewFactory, resumeViewSchema, unzipResumeView, zipResumeView } from "@/schema/resume";
 
 type SectionKey = keyof DraftData["sections"];
 
@@ -24,7 +24,7 @@ const sectionTypes = [
  * @remarks
  * Seeds the required minimal string fields for ResumeView validation.
  * @param type - The section type to seed.
- * @param item - The draft item to mutate.
+ * @param item - The data item to mutate.
  * @returns The same item with required fields populated.
  */
 const requiredFieldSetters: {

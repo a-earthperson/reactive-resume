@@ -6,7 +6,7 @@ import type {
 	SectionItem,
 	SectionType,
 	SummaryItem as SummaryItemType,
-} from "@/schema/resume/view";
+} from "@/schema/resume";
 import { cn } from "@/utils/style";
 import { useResumeStore } from "../store/resume";
 import { AwardsItem } from "./items/awards-item";

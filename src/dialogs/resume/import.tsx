@@ -20,7 +20,7 @@ import { JSONResumeImporter } from "@/integrations/import/json-resume";
 import { ReactiveResumeJSONImporter } from "@/integrations/import/reactive-resume-json";
 import { ReactiveResumeV4JSONImporter } from "@/integrations/import/reactive-resume-v4-json";
 import { client, orpc } from "@/integrations/orpc/client";
-import type { ResumeView } from "@/schema/resume/view";
+import type { ResumeView } from "@/schema/resume";
 import { cn } from "@/utils/style";
 import { type DialogProps, useDialogStore } from "../store";
 

@@ -5,7 +5,7 @@
  * Runtime validation schemas for Resume view styles. These schemas model visual
  * configuration that complements DraftResume data without embedding content itself.
  *
- * The intent is to keep view styling orthogonal to draft content while providing
+ * The intent is to keep view styling orthogonal to data content while providing
  * a well-defined runtime contract for display-oriented settings.
  *
  * @see {@link ./styles.types | Resume Styles types}
@@ -342,7 +342,7 @@ export const metadataStylesSchema = z.object({
  *   "metadata": { "template": "onyx", "layout": { "sidebarWidth": 35, "pages": [] } }
  * }
  */
-export const resumeStylesSchema = z.object({
+export const stylesSchema = z.object({
 	itemOptions: itemOptionsSchema,
 	baseItem: baseItemStylesSchema,
 	picture: pictureStylesSchema,

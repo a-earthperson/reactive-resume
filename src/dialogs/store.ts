@@ -16,7 +16,7 @@ import {
 	skillItemViewSchema as skillItemSchema,
 	summaryItemViewSchema as summaryItemSchema,
 	volunteerItemViewSchema as volunteerItemSchema,
-} from "@/schema/resume/view";
+} from "@/schema/resume";
 
 const dialogTypeSchema = z.discriminatedUnion("type", [
 	z.object({ type: z.literal("auth.change-password"), data: z.undefined() }),

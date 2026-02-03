@@ -20,7 +20,7 @@ import { useResumeStore } from "@/components/resume/store/resume";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { templates } from "@/dialogs/resume/template/data";
-import type { SectionType } from "@/schema/resume/view";
+import type { SectionType } from "@/schema/resume";
 import { getSectionTitle } from "@/utils/resume/section";
 import { cn } from "@/utils/style";
 

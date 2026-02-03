@@ -1,0 +1,90 @@
+import { describe, expect, it } from "vitest";
+import { type DraftData, draftDataSchema, draftFactory, urlValueSchema } from "@/schema/resume/data";
+
+/**
+ * @remarks
+ * Constructs a fully shaped DraftData payload with empty fields, ensuring the schema
+ * accepts iterative drafts that may not have content yet.
+ *
+ * @returns A DraftData-compliant object populated with empty strings and arrays.
+ * @see {@link draftDataSchema}
+ */
+const createEmptyDraftData = (): DraftData => draftFactory.draft.empty();
+
+/**
+ * @remarks
+ * Validates the DraftData schema behavior with intentionally empty values.
+ * Ensures required fields exist while content can be blank during drafting.
+ *
+ * @see {@link draftDataSchema}
+ */
+describe("draftDataSchema", () => {
+	/**
+	 * @remarks Confirms that a fully shaped payload with empty strings is accepted.
+	 */
+	it("accepts empty strings and empty arrays", () => {
+		const result = draftDataSchema.safeParse(createEmptyDraftData());
+		expect(result.success).toBe(true);
+	});
+
+	/**
+	 * @remarks Ensures list items require stable identifiers.
+	 */
+	it("rejects list items without ids", () => {
+		const invalidPayload: unknown = {
+			...createEmptyDraftData(),
+			sections: {
+				...createEmptyDraftData().sections,
+				experience: {
+					...createEmptyDraftData().sections.experience,
+					items: [
+						{
+							company: "Institute for Advanced Study",
+							position: "Professor of Mathematics",
+							location: "Princeton, NJ, USA",
+							period: "1933 - 1957",
+							website: { label: "ias.edu", url: "https://www.ias.edu" },
+							description: "Missing id should be rejected.",
+						},
+					],
+				},
+			},
+		};
+
+		const result = draftDataSchema.safeParse(invalidPayload);
+		expect(result.success).toBe(false);
+	});
+
+	/**
+	 * @remarks Ensures missing top-level keys are rejected to preserve schema shape.
+	 */
+	it("rejects missing required top-level fields", () => {
+		const result = draftDataSchema.safeParse({});
+		expect(result.success).toBe(false);
+		expect(result.error?.issues.length).toBeGreaterThan(0);
+	});
+});
+
+/**
+ * @remarks
+ * Validates the URL value schema accepts both string and URL instance inputs.
+ *
+ * @see {@link urlValueSchema}
+ */
+describe("urlValueSchema", () => {
+	/**
+	 * @remarks Accepts a concrete URL object.
+	 */
+	it("accepts URL instances", () => {
+		const result = urlValueSchema.safeParse("https://example.com");
+		expect(result.success).toBe(true);
+	});
+
+	/**
+	 * @remarks Rejects values that are not URL-like.
+	 */
+	it("rejects non-string, non-URL values", () => {
+		const result = urlValueSchema.safeParse(123);
+		expect(result.success).toBe(false);
+	});
+});

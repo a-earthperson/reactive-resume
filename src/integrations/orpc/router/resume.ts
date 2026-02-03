@@ -1,14 +1,14 @@
 import z from "zod";
-import { draftDataSchema } from "@/schema/draft/data";
-import { draftOperationListSchema } from "@/schema/draft/operations";
-import { resumeViewSchema, sampleResumeView } from "@/schema/resume/view";
+import { draftDataSchema } from "@/schema/resume/data";
+import { draftOperationListSchema } from "@/schema/resume/data/operations";
+import { resumeViewSchema, sampleResumeView } from "@/schema/resume";
 import { generateRandomName, slugify } from "@/utils/string";
 import { protectedProcedure, publicProcedure, serverOnlyProcedure } from "../context";
 import { resumeService } from "../services/resume";
-import { resumeDraftService } from "../services/resume-draft";
+import { resumeDraftService } from "../services/resume/resume-draft";
 
 /**
- * @remarks Validates draft identifiers as UUIDs to prevent database casting errors.
+ * @remarks Validates data identifiers as UUIDs to prevent database casting errors.
  * @example "019c1665-d23b-716a-91db-0e703e598084"
  */
 const draftIdSchema = z.string().uuid();
@@ -262,10 +262,10 @@ export const resumeRouter = {
 	getDraftById: protectedProcedure
 		.route({
 			method: "GET",
-			path: "/resume/{id}/draft",
+			path: "/resume/{id}/data",
 			tags: ["Resume"],
-			summary: "Get resume draft by ID",
-			description: "Fetch the draft data slice for a resume by ID.",
+			summary: "Get resume data by ID",
+			description: "Fetch the data data slice for a resume by ID.",
 		})
 		.input(z.object({ id: draftIdSchema }))
 		.output(
@@ -283,10 +283,10 @@ export const resumeRouter = {
 	patchDraft: protectedProcedure
 		.route({
 			method: "PATCH",
-			path: "/resume/{id}/draft",
+			path: "/resume/{id}/data",
 			tags: ["Resume"],
-			summary: "Patch resume draft data",
-			description: "Patch the draft data slice of a resume view without updating styles.",
+			summary: "Patch resume data data",
+			description: "Patch the data data slice of a resume view without updating styles.",
 		})
 		.input(z.object({ id: draftIdSchema, data: z.record(z.string(), z.any()) }))
 		.output(z.void())
@@ -307,10 +307,10 @@ export const resumeRouter = {
 	applyDraftOperations: protectedProcedure
 		.route({
 			method: "POST",
-			path: "/resume/{id}/draft/ops",
+			path: "/resume/{id}/data/ops",
 			tags: ["Resume"],
-			summary: "Apply resume draft operations",
-			description: "Apply an ordered list of draft operations to the resume draft data slice.",
+			summary: "Apply resume data operations",
+			description: "Apply an ordered list of data operations to the resume data data slice.",
 		})
 		.input(z.object({ id: draftIdSchema, operations: draftOperationListSchema }))
 		.output(z.void())

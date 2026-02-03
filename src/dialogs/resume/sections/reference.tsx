@@ -14,7 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import type { DialogProps } from "@/dialogs/store";
 import { useDialogStore } from "@/dialogs/store";
 import { useFormBlocker } from "@/hooks/use-form-blocker";
-import { referenceItemViewSchema as referenceItemSchema } from "@/schema/resume/view";
+import { referenceItemViewSchema as referenceItemSchema } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 
 const formSchema = referenceItemSchema;

@@ -10,7 +10,7 @@ import { immer } from "zustand/middleware/immer";
 import { create } from "zustand/react";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 import { orpc, type RouterOutput } from "@/integrations/orpc/client";
-import type { ResumeView } from "@/schema/resume/view";
+import type { ResumeView } from "@/schema/resume";
 
 type Resume = Pick<RouterOutput["resume"]["getByIdForPrinter"], "id" | "name" | "slug" | "tags" | "data" | "isLocked">;
 

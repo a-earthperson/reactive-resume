@@ -1,6 +1,6 @@
-import type { ResumeStyles } from "./styles.factory";
+import type { Resume } from "./styles.types.ts";
 
-export const sampleResumeStyles: ResumeStyles[] = [
+export const sampleResumeStyles: Resume.Styles.Types[] = [
 	{
 		itemOptions: {
 			showLinkInTitle: false,

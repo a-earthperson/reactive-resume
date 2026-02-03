@@ -4,7 +4,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool, type QueryResult } from "pg";
 import { schema } from "@/integrations/drizzle";
 import { ReactiveResumeV4JSONImporter } from "@/integrations/import/reactive-resume-v4-json";
-import { resumeViewFactory } from "@/schema/resume/view";
+import { resumeViewFactory } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 
 // Types for the production database

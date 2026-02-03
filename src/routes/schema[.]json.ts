@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import z from "zod";
-import { resumeViewSchema } from "@/schema/resume/view";
+import { resumeViewSchema } from "@/schema/resume";
 
 function handler() {
 	const resumeDataJSONSchema = z.toJSONSchema(resumeViewSchema);

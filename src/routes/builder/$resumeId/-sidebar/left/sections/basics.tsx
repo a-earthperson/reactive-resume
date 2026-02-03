@@ -6,7 +6,7 @@ import { URLInput } from "@/components/input/url-input";
 import { useResumeStore } from "@/components/resume/store/resume";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { basicsViewSchema as basicsSchema } from "@/schema/resume/view";
+import { basicsViewSchema as basicsSchema } from "@/schema/resume";
 import { SectionBase } from "../shared/section-base";
 import { CustomFieldsSection } from "./custom-fields";
 

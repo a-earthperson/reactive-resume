@@ -27,7 +27,7 @@ import {
 import { useDialogStore } from "@/dialogs/store";
 import { useConfirm } from "@/hooks/use-confirm";
 import { usePrompt } from "@/hooks/use-prompt";
-import type { SectionType } from "@/schema/resume/view";
+import type { SectionType } from "@/schema/resume";
 
 type Props = {
 	type: "summary" | SectionType;

@@ -1,5 +1,5 @@
 import type { WritableDraft } from "immer";
-import type { CustomSection, CustomSectionType, ResumeView, SectionItem, SectionType } from "@/schema/resume/view";
+import type { CustomSection, CustomSectionType, ResumeView, SectionItem, SectionType } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 import { getSectionTitle as getDefaultSectionTitle } from "./section";
 
@@ -133,7 +133,7 @@ export function getCompatibleMoveTargets(
 /**
  * Removes an item from its source section (standard or custom).
  *
- * @param draft - The immer draft of resume data
+ * @param draft - The immer data of resume data
  * @param itemId - The ID of the item to remove
  * @param type - The section type
  * @param customSectionId - The custom section ID (if applicable)
@@ -171,7 +171,7 @@ export function removeItemFromSource(
 /**
  * Adds an item to a target section.
  *
- * @param draft - The immer draft of resume data
+ * @param draft - The immer data of resume data
  * @param item - The item to add
  * @param targetSectionId - The target section ID
  * @param type - The section type
@@ -201,7 +201,7 @@ export function addItemToSection(
 /**
  * Creates a new custom section with the given item and adds it to the specified page.
  *
- * @param draft - The immer draft of resume data
+ * @param draft - The immer data of resume data
  * @param item - The item to add to the new section
  * @param type - The section type for the new custom section
  * @param sectionTitle - The title for the new custom section
@@ -241,7 +241,7 @@ export function createCustomSectionWithItem(
 /**
  * Creates a new page with a custom section containing the given item.
  *
- * @param draft - The immer draft of resume data
+ * @param draft - The immer data of resume data
  * @param item - The item to add to the new section
  * @param type - The section type for the new custom section
  * @param sectionTitle - The title for the new custom section

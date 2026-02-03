@@ -1,6 +1,6 @@
 import { flattenError, ZodError, z } from "zod";
 import type { IconName } from "@/schema/icons";
-import { type ResumeView, resumeViewFactory, resumeViewSchema } from "@/schema/resume/view";
+import { type ResumeView, resumeViewFactory, resumeViewSchema } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 
 // Custom ISO 8601 date pattern that allows partial dates (year only, year-month, or full date)

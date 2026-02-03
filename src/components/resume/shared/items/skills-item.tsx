@@ -1,4 +1,4 @@
-import type { SectionItem } from "@/schema/resume/view";
+import type { SectionItem } from "@/schema/resume";
 import { cn } from "@/utils/style";
 import { PageIcon } from "../page-icon";
 import { PageLevel } from "../page-level";

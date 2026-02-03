@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: only used in places where we know the value is not null */
 
 import z, { flattenError, ZodError } from "zod";
-import { type ResumeView, resumeViewSchema } from "@/schema/resume/view";
+import { type ResumeView, resumeViewSchema } from "@/schema/resume";
 import { type Template, templateSchema } from "@/schema/templates";
 import { parseRgbString } from "@/utils/color";
 import { generateId } from "@/utils/string";

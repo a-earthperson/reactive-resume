@@ -10,7 +10,7 @@ import docxParserSystemPrompt from "@/integrations/ai/prompts/docx-parser-system
 import docxParserUserPrompt from "@/integrations/ai/prompts/docx-parser-user.md?raw";
 import pdfParserSystemPrompt from "@/integrations/ai/prompts/pdf-parser-system.md?raw";
 import pdfParserUserPrompt from "@/integrations/ai/prompts/pdf-parser-user.md?raw";
-import { type ResumeView, resumeViewFactory, resumeViewSchema } from "@/schema/resume/view";
+import { type ResumeView, resumeViewFactory, resumeViewSchema } from "@/schema/resume";
 
 export const aiProviderSchema = z.enum(["ollama", "openai", "gemini", "anthropic", "vercel-ai-gateway"]);
 

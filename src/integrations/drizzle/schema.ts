@@ -1,6 +1,6 @@
 import * as pg from "drizzle-orm/pg-core";
-import type { DraftData } from "@/schema/draft/data";
-import { type ResumeView, resumeViewFactory } from "@/schema/resume/view";
+import type { DraftData } from "@/schema/resume/data";
+import { type ResumeView, resumeViewFactory } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 
 export const user = pg.pgTable(

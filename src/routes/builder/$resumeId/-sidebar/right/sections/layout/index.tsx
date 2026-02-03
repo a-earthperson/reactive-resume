@@ -6,7 +6,7 @@ import { useResumeStore } from "@/components/resume/store/resume";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { Slider } from "@/components/ui/slider";
-import { metadataViewSchema } from "@/schema/resume/view";
+import { metadataViewSchema } from "@/schema/resume";
 import { SectionBase } from "../../shared/section-base";
 import { LayoutPages } from "./pages";
 

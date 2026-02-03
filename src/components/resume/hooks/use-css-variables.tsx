@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type z from "zod";
 import { pageDimensionsAsMillimeters } from "@/schema/page";
-import type { resumeViewSchema } from "@/schema/resume/view";
+import type { resumeViewSchema } from "@/schema/resume";
 
 type UseCssVariablesProps = Pick<z.infer<typeof resumeViewSchema>, "picture" | "metadata">;
 

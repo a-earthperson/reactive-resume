@@ -31,7 +31,7 @@ import {
 	UserIcon,
 } from "@phosphor-icons/react";
 import { match } from "ts-pattern";
-import type { SectionType } from "@/schema/resume/view";
+import type { SectionType } from "@/schema/resume";
 import { cn } from "../style";
 
 export type LeftSidebarSection = "picture" | "basics" | "summary" | SectionType | "custom";
