@@ -1,4 +1,4 @@
-import type { SectionItem, SectionType } from "@/schema/resume/data";
+import type { SectionItem, SectionType } from "@/schema/resume";
 import { getSectionTitle } from "@/utils/resume/section";
 import { cn } from "@/utils/style";
 import { useResumeStore } from "../store/resume";

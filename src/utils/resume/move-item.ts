@@ -1,5 +1,5 @@
 import type { WritableDraft } from "immer";
-import type { CustomSection, CustomSectionType, ResumeData, SectionItem, SectionType } from "@/schema/resume/data";
+import type { CustomSection, CustomSectionType, ResumeView, SectionItem, SectionType } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 import { getSectionTitle as getDefaultSectionTitle } from "./section";
 
@@ -63,7 +63,7 @@ function isStandardSectionId(sectionId: string): sectionId is SectionType {
  * @returns The section title
  */
 export function getSourceSectionTitle(
-	resumeData: ResumeData,
+	resumeData: ResumeView,
 	type: CustomSectionType,
 	customSectionId?: string,
 ): string {
@@ -85,7 +85,7 @@ export function getSourceSectionTitle(
  * @returns Array of pages with their compatible sections
  */
 export function getCompatibleMoveTargets(
-	resumeData: ResumeData,
+	resumeData: ResumeView,
 	sourceType: CustomSectionType,
 	sourceSectionId: string | undefined,
 ): MoveTargetPage[] {
@@ -133,14 +133,14 @@ export function getCompatibleMoveTargets(
 /**
  * Removes an item from its source section (standard or custom).
  *
- * @param draft - The immer draft of resume data
+ * @param draft - The immer data of resume data
  * @param itemId - The ID of the item to remove
  * @param type - The section type
  * @param customSectionId - The custom section ID (if applicable)
  * @returns The removed item, or null if not found
  */
 export function removeItemFromSource(
-	draft: WritableDraft<ResumeData>,
+	draft: WritableDraft<ResumeView>,
 	itemId: string,
 	type: CustomSectionType,
 	customSectionId?: string,
@@ -156,8 +156,9 @@ export function removeItemFromSource(
 		return removed as SectionItem;
 	}
 
-	// Type assertion: when customSectionId is not provided, type is always a built-in SectionType
-	const section = draft.sections[type as SectionType];
+	if (!isStandardSectionId(type)) return null;
+
+	const section = draft.sections[type];
 	if (!("items" in section)) return null;
 
 	const index = section.items.findIndex((item) => item.id === itemId);
@@ -170,20 +171,20 @@ export function removeItemFromSource(
 /**
  * Adds an item to a target section.
  *
- * @param draft - The immer draft of resume data
+ * @param draft - The immer data of resume data
  * @param item - The item to add
  * @param targetSectionId - The target section ID
  * @param type - The section type
  */
 export function addItemToSection(
-	draft: WritableDraft<ResumeData>,
+	draft: WritableDraft<ResumeView>,
 	item: SectionItem,
 	targetSectionId: string,
 	type: CustomSectionType,
 ): void {
 	// Check if target is a standard section
 	if (isStandardSectionId(targetSectionId) && targetSectionId === type) {
-		const section = draft.sections[type as SectionType];
+		const section = draft.sections[type];
 		if ("items" in section) {
 			section.items.push(item as never);
 		}
@@ -200,7 +201,7 @@ export function addItemToSection(
 /**
  * Creates a new custom section with the given item and adds it to the specified page.
  *
- * @param draft - The immer draft of resume data
+ * @param draft - The immer data of resume data
  * @param item - The item to add to the new section
  * @param type - The section type for the new custom section
  * @param sectionTitle - The title for the new custom section
@@ -208,7 +209,7 @@ export function addItemToSection(
  * @returns The ID of the newly created custom section
  */
 export function createCustomSectionWithItem(
-	draft: WritableDraft<ResumeData>,
+	draft: WritableDraft<ResumeView>,
 	item: SectionItem,
 	type: CustomSectionType,
 	sectionTitle: string,
@@ -240,13 +241,13 @@ export function createCustomSectionWithItem(
 /**
  * Creates a new page with a custom section containing the given item.
  *
- * @param draft - The immer draft of resume data
+ * @param draft - The immer data of resume data
  * @param item - The item to add to the new section
  * @param type - The section type for the new custom section
  * @param sectionTitle - The title for the new custom section
  */
 export function createPageWithSection(
-	draft: WritableDraft<ResumeData>,
+	draft: WritableDraft<ResumeView>,
 	item: SectionItem,
 	type: CustomSectionType,
 	sectionTitle: string,

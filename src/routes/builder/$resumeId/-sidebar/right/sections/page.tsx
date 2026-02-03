@@ -9,7 +9,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { Switch } from "@/components/ui/switch";
-import { pageSchema } from "@/schema/resume/data";
+import { pageSchema } from "@/schema/resume/styles";
 import { SectionBase } from "../shared/section-base";
 
 export function PageSectionBuilder() {

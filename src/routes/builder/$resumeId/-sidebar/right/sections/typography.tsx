@@ -7,7 +7,7 @@ import { FontFamilyCombobox, FontWeightCombobox, getNextWeight } from "@/compone
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
-import { typographySchema } from "@/schema/resume/data";
+import { typographySchema } from "@/schema/resume/styles";
 import { SectionBase } from "../shared/section-base";
 
 export function TypographySectionBuilder() {

@@ -1,5 +1,5 @@
 import { TiptapContent } from "@/components/input/rich-input";
-import type { SummaryItem as SummaryItemType } from "@/schema/resume/data";
+import type { SummaryItem as SummaryItemType } from "@/schema/resume";
 import { stripHtml } from "@/utils/string";
 import { cn } from "@/utils/style";
 

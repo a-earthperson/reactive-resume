@@ -1,10 +1,10 @@
 import { flattenError, ZodError } from "zod";
-import { type ResumeData, resumeDataSchema } from "@/schema/resume/data";
+import { type ResumeView, resumeViewSchema } from "@/schema/resume";
 
 export class ReactiveResumeJSONImporter {
-	parse(json: string): ResumeData {
+	parse(json: string): ResumeView {
 		try {
-			return resumeDataSchema.parse(JSON.parse(json));
+			return resumeViewSchema.parse(JSON.parse(json));
 		} catch (error) {
 			if (error instanceof ZodError) {
 				const errors = flattenError(error);

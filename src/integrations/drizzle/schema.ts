@@ -1,5 +1,6 @@
 import * as pg from "drizzle-orm/pg-core";
-import { defaultResumeData, type ResumeData } from "@/schema/resume/data";
+import type { DraftData } from "@/schema/resume/data";
+import { type ResumeView, resumeViewFactory } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 
 export const user = pg.pgTable(
@@ -176,8 +177,8 @@ export const resume = pg.pgTable(
 		data: pg
 			.jsonb("data")
 			.notNull()
-			.$type<ResumeData>()
-			.$defaultFn(() => defaultResumeData),
+			.$type<ResumeView>()
+			.$defaultFn(() => resumeViewFactory.defaults()),
 		userId: pg
 			.uuid("user_id")
 			.notNull()
@@ -195,6 +196,33 @@ export const resume = pg.pgTable(
 		pg.index().on(t.userId, t.updatedAt.desc()),
 		pg.index().on(t.isPublic, t.slug, t.userId),
 	],
+);
+
+/**
+ * @remarks Stores Draft Resume data scoped to a user.
+ * @see DraftData
+ */
+export const draft = pg.pgTable(
+	"draft",
+	{
+		id: pg
+			.uuid("id")
+			.notNull()
+			.primaryKey()
+			.$defaultFn(() => generateId()),
+		data: pg.jsonb("data").notNull().$type<DraftData>(),
+		userId: pg
+			.uuid("user_id")
+			.notNull()
+			.references(() => user.id, { onDelete: "cascade" }),
+		createdAt: pg.timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+		updatedAt: pg
+			.timestamp("updated_at", { withTimezone: true })
+			.notNull()
+			.defaultNow()
+			.$onUpdate(() => /* @__PURE__ */ new Date()),
+	},
+	(t) => [pg.index().on(t.userId), pg.index().on(t.userId, t.updatedAt.desc())],
 );
 
 export const resumeStatistics = pg.pgTable(

@@ -35,7 +35,7 @@ import type {
 	CustomSectionType,
 	SectionItem as SectionItemType,
 	SectionType,
-} from "@/schema/resume/data";
+} from "@/schema/resume";
 import {
 	addItemToSection,
 	createCustomSectionWithItem,

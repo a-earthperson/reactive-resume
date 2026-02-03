@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import type { DialogProps } from "@/dialogs/store";
 import { useDialogStore } from "@/dialogs/store";
 import { useFormBlocker } from "@/hooks/use-form-blocker";
-import { interestItemSchema } from "@/schema/resume/data";
+import { interestItemViewSchema as interestItemSchema } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 import { cn } from "@/utils/style";
 

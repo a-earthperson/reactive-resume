@@ -10,8 +10,7 @@ import docxParserSystemPrompt from "@/integrations/ai/prompts/docx-parser-system
 import docxParserUserPrompt from "@/integrations/ai/prompts/docx-parser-user.md?raw";
 import pdfParserSystemPrompt from "@/integrations/ai/prompts/pdf-parser-system.md?raw";
 import pdfParserUserPrompt from "@/integrations/ai/prompts/pdf-parser-user.md?raw";
-import type { ResumeData } from "@/schema/resume/data";
-import { defaultResumeData, resumeDataSchema } from "@/schema/resume/data";
+import { type ResumeView, resumeViewFactory, resumeViewSchema } from "@/schema/resume";
 
 export const aiProviderSchema = z.enum(["ollama", "openai", "gemini", "anthropic", "vercel-ai-gateway"]);
 
@@ -67,12 +66,13 @@ export type ParsePdfInput = z.infer<typeof aiCredentialsSchema> & {
 	file: z.infer<typeof fileInputSchema>;
 };
 
-export async function parsePdf(input: ParsePdfInput): Promise<ResumeData> {
+export async function parsePdf(input: ParsePdfInput): Promise<ResumeView> {
 	const model = getModel(input);
+	const defaults = resumeViewFactory.defaults();
 
 	const result = await generateText({
 		model,
-		output: Output.object({ schema: resumeDataSchema }),
+		output: Output.object({ schema: resumeViewSchema }),
 		messages: [
 			{
 				role: "system",
@@ -93,11 +93,11 @@ export async function parsePdf(input: ParsePdfInput): Promise<ResumeData> {
 		],
 	});
 
-	return resumeDataSchema.parse({
+	return resumeViewSchema.parse({
 		...result.output,
 		customSections: [],
-		picture: defaultResumeData.picture,
-		metadata: defaultResumeData.metadata,
+		picture: defaults.picture,
+		metadata: defaults.metadata,
 	});
 }
 
@@ -106,12 +106,13 @@ export type ParseDocxInput = z.infer<typeof aiCredentialsSchema> & {
 	mediaType: "application/msword" | "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 };
 
-export async function parseDocx(input: ParseDocxInput): Promise<ResumeData> {
+export async function parseDocx(input: ParseDocxInput): Promise<ResumeView> {
 	const model = getModel(input);
+	const defaults = resumeViewFactory.defaults();
 
 	const result = await generateText({
 		model,
-		output: Output.object({ schema: resumeDataSchema }),
+		output: Output.object({ schema: resumeViewSchema }),
 		messages: [
 			{ role: "system", content: docxParserSystemPrompt },
 			{
@@ -129,11 +130,11 @@ export async function parseDocx(input: ParseDocxInput): Promise<ResumeData> {
 		],
 	});
 
-	return resumeDataSchema.parse({
+	return resumeViewSchema.parse({
 		...result.output,
 		customSections: [],
-		picture: defaultResumeData.picture,
-		metadata: defaultResumeData.metadata,
+		picture: defaults.picture,
+		metadata: defaults.metadata,
 	});
 }
 

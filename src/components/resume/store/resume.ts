@@ -10,7 +10,7 @@ import { immer } from "zustand/middleware/immer";
 import { create } from "zustand/react";
 import { useStoreWithEqualityFn } from "zustand/traditional";
 import { orpc, type RouterOutput } from "@/integrations/orpc/client";
-import type { ResumeData } from "@/schema/resume/data";
+import type { ResumeView } from "@/schema/resume";
 
 type Resume = Pick<RouterOutput["resume"]["getByIdForPrinter"], "id" | "name" | "slug" | "tags" | "data" | "isLocked">;
 
@@ -21,7 +21,7 @@ type ResumeStoreState = {
 
 type ResumeStoreActions = {
 	initialize: (resume: Resume | null) => void;
-	updateResumeData: (fn: (draft: WritableDraft<ResumeData>) => void) => void;
+	updateResumeData: (fn: (draft: WritableDraft<ResumeView>) => void) => void;
 };
 
 type ResumeStore = ResumeStoreState & ResumeStoreActions;

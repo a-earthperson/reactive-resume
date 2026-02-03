@@ -15,7 +15,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/
 import { Switch } from "@/components/ui/switch";
 import { type DialogProps, useDialogStore } from "@/dialogs/store";
 import { useFormBlocker } from "@/hooks/use-form-blocker";
-import { profileItemSchema } from "@/schema/resume/data";
+import { profileItemViewSchema as profileItemSchema } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 import { cn } from "@/utils/style";
 

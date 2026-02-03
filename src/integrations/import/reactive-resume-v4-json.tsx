@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: only used in places where we know the value is not null */
 
 import z, { flattenError, ZodError } from "zod";
-import { type ResumeData, resumeDataSchema } from "@/schema/resume/data";
+import { type ResumeView, resumeViewSchema } from "@/schema/resume";
 import { type Template, templateSchema } from "@/schema/templates";
 import { parseRgbString } from "@/utils/color";
 import { generateId } from "@/utils/string";
@@ -406,11 +406,11 @@ const transformLayoutColumn = (column: string[]): string[] => {
 };
 
 export class ReactiveResumeV4JSONImporter {
-	parse(json: string): ResumeData {
+	parse(json: string): ResumeView {
 		try {
 			const v4Data = JSON.parse(json) as V4ResumeData;
 
-			const transformed: ResumeData = {
+			const transformed: ResumeView = {
 				picture: {
 					hidden: v4Data.basics.picture?.effects?.hidden ?? false,
 					url: v4Data.basics.picture?.url ?? "",
@@ -755,7 +755,7 @@ export class ReactiveResumeV4JSONImporter {
 				}
 			}
 
-			return resumeDataSchema.parse(transformed);
+			return resumeViewSchema.parse(transformed);
 		} catch (error: unknown) {
 			if (error instanceof ZodError) {
 				const errors = flattenError(error);

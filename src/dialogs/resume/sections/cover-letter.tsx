@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import type { DialogProps } from "@/dialogs/store";
 import { useDialogStore } from "@/dialogs/store";
 import { useFormBlocker } from "@/hooks/use-form-blocker";
-import { coverLetterItemSchema } from "@/schema/resume/data";
+import { coverLetterItemViewSchema as coverLetterItemSchema } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 
 const formSchema = coverLetterItemSchema;

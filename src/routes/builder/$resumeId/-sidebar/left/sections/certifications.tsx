@@ -2,7 +2,7 @@ import { Trans } from "@lingui/react/macro";
 import { AnimatePresence, Reorder } from "motion/react";
 import type z from "zod";
 import { useResumeStore } from "@/components/resume/store/resume";
-import type { certificationItemSchema } from "@/schema/resume/data";
+import type { certificationItemViewSchema as certificationItemSchema } from "@/schema/resume";
 import { cn } from "@/utils/style";
 import { SectionBase } from "../shared/section-base";
 import { SectionAddItemButton, SectionItem } from "../shared/section-item";

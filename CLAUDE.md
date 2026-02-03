@@ -18,6 +18,9 @@ pnpm build
 # Start production server
 pnpm start
 
+# Run test suite (Vitest)
+pnpm test
+
 # Linting (uses Biome)
 pnpm lint
 
@@ -61,22 +64,29 @@ pnpm knip
 - `plugins/` - Nitro server plugins (eg. auto-migration on startup)
 - `migrations/` - Drizzle database migrations
 - `locales/` - i18n translation files (managed by Lingui)
+- `tests/` - mirrors `src/` folder structure for related `*.test.ts` files.
 
 ### Key Integrations (`src/integrations/`)
 
 - **auth/** - Better Auth configuration and client
 - **drizzle/** - Database schema and client (PostgreSQL)
-- **orpc/** - Type-safe RPC router with procedures for ai, auth, flags, printer, resume, statistics, storage
+- **orpc/** - Type-safe RPC router with procedures for ai, auth, draft, flags, printer, resume, statistics, storage
 - **query/** - TanStack Query client configuration
 - **ai/** - AI provider integrations (OpenAI, Anthropic, Google Gemini, Ollama)
 
-### Resume Data Model
+### Resume View Model
 
-The resume schema is defined in `src/schema/resume/data.ts`. Key concepts:
-- **ResumeData** - Complete resume data including basics, sections, customSections, metadata
+The resume view schema is defined in `src/schema/resume/view/`. Key concepts:
+- **ResumeView** - Zipped resume view combining data and styles (basics, sections, customSections, metadata)
 - **Sections** - Built-in sections (profiles, experience, education, skills, etc.)
 - **CustomSections** - User-created sections that follow one of the built-in section types
 - **Metadata** - Template, layout, typography, design settings, custom CSS
+
+### Draft Data Model
+
+The draft schema is defined in `src/schema/draft/`. Key concepts:
+- **DraftData** - Iterative draft data with permissive empty values
+- **Draft operations** - Command-style updates validated in `src/schema/draft/operations/operations.schema.ts`
 
 ### Resume Templates
 
@@ -86,7 +96,8 @@ Templates are React components in `src/components/resume/templates/`. Each templ
 
 Defined in `src/integrations/drizzle/schema.ts`:
 - `user`, `session`, `account`, `verification`, `twoFactor`, `passkey`, `apikey` - Better Auth tables
-- `resume` - Stores Resume Data as JSONB (defined in `src/schema/resume/data.ts`)
+- `resume` - Stores Resume View as JSONB (defined in `src/schema/resume/view/`)
+- `draft` - Stores Draft Data as JSONB (defined in `src/schema/draft/`)
 - `resumeStatistics` - Views/Download for Resume Tracking
 
 ### Routing
@@ -103,6 +114,12 @@ Uses TanStack Router with file-based routing. Key routes:
 
 - **Zustand** - Client-side state (resume editor state in `src/components/resume/store/`)
 - **TanStack Query** - Server state and caching (configured via ORPC integration)
+
+## Testing
+
+- **Test runner**: Vitest (`pnpm test` runs `vitest run`).
+- **Unit tests** live in `src/**/*.test.ts`.
+- **In-memory DB tests**: draft operation tests use `@electric-sql/pglite` with `drizzle-orm/pglite` to avoid external PostgreSQL.
 
 ## Code Style
 

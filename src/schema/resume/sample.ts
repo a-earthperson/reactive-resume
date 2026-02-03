@@ -1,6 +1,6 @@
-import type { ResumeData } from "./data";
+import type { ResumeView } from "./index.ts";
 
-export const sampleResumeData: ResumeData = {
+export const sampleResume: ResumeView = {
 	picture: {
 		hidden: false,
 		url: "https://i.imgur.com/o4Jpt1p.jpeg",

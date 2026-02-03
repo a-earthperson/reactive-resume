@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { basicsSchema } from "@/schema/resume/data";
+import type { basicsViewSchema as basicsSchema } from "@/schema/resume";
 import { generateId } from "@/utils/string";
 
 type FormValues = z.infer<typeof basicsSchema>;

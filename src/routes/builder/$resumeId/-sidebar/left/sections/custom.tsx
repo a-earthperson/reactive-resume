@@ -31,7 +31,7 @@ import type {
 	CustomSection,
 	CustomSectionItem as CustomSectionItemType,
 	CustomSectionType,
-} from "@/schema/resume/data";
+} from "@/schema/resume";
 import { getSectionTitle } from "@/utils/resume/section";
 import { stripHtml } from "@/utils/string";
 import { cn } from "@/utils/style";
