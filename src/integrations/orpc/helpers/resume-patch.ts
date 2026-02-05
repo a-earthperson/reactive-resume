@@ -1,7 +1,13 @@
 import { ORPCError } from "@orpc/client";
 import isDeepEqual from "fast-deep-equal";
 import z from "zod";
-import { resumeDataSchema, sectionTypeSchema, type ResumeData, type SectionType } from "@/schema/resume/data";
+import {
+	type CustomSectionType,
+	type ResumeData,
+	resumeDataSchema,
+	type SectionType,
+	sectionTypeSchema,
+} from "@/schema/resume/data";
 import { generateId } from "@/utils/string";
 
 const jsonPatchPathSchema = z.string().min(1);
@@ -39,7 +45,7 @@ const forbiddenPathSegments = new Set(["__proto__", "prototype", "constructor"])
 const topLevelPaths = new Set(["name", "slug", "tags", "isPublic"]);
 const nonRemovableTopLevelPaths = new Set(["name", "slug", "tags", "isPublic"]);
 
-const sectionsWithWebsite = new Set<SectionType>([
+const sectionsWithWebsite = new Set<CustomSectionType>([
 	"awards",
 	"certifications",
 	"education",
@@ -51,7 +57,7 @@ const sectionsWithWebsite = new Set<SectionType>([
 	"profiles",
 ]);
 
-const sectionsWithIcon = new Set<SectionType>(["profiles", "skills", "interests"]);
+const sectionsWithIcon = new Set<CustomSectionType>(["profiles", "skills", "interests"]);
 
 const allowedLayoutIds = new Set<string>(["summary", ...sectionTypeSchema.options]);
 
@@ -138,12 +144,7 @@ function resolvePatchPath(
 	return resolveById(pathSegments, target.data);
 }
 
-function validatePatchPath(
-	pathSegments: string[],
-	op: JsonPatchOp,
-	path: string,
-	options: { forFrom?: boolean } = {},
-) {
+function validatePatchPath(pathSegments: string[], op: JsonPatchOp, path: string, options: { forFrom?: boolean } = {}) {
 	if (pathSegments.length === 0) {
 		throw new ORPCError("INVALID_PATCH_PATH", { status: 400, data: { path } });
 	}
@@ -284,21 +285,24 @@ function normalizeOpValue(op: ResolvedPatchOp, target: ResumePatchTarget, existi
 	return op;
 }
 
-function getCustomSectionType(data: ResumeData, indexSegment: string): SectionType {
+function getCustomSectionType(data: ResumeData, indexSegment: string): CustomSectionType {
 	const index = Number(indexSegment);
 	const section = data.customSections[index];
 	if (!section) {
-		throw new ORPCError("PATCH_TARGET_NOT_FOUND", { status: 404, data: { path: `/data/customSections/${indexSegment}` } });
+		throw new ORPCError("PATCH_TARGET_NOT_FOUND", {
+			status: 404,
+			data: { path: `/data/customSections/${indexSegment}` },
+		});
 	}
 	return section.type;
 }
 
-function normalizeItemsArray(sectionType: SectionType, value: unknown) {
+function normalizeItemsArray(sectionType: CustomSectionType, value: unknown) {
 	if (!Array.isArray(value)) return value;
 	return value.map((item) => normalizeItem(sectionType, item));
 }
 
-function normalizeItem(sectionType: SectionType, value: unknown, existingValue?: unknown) {
+function normalizeItem(sectionType: CustomSectionType, value: unknown, existingValue?: unknown) {
 	if (!value || typeof value !== "object" || Array.isArray(value)) return value;
 
 	const existing =
@@ -341,7 +345,7 @@ function normalizeCustomSection(value: unknown, existingValue?: unknown) {
 	if (section.items === undefined) section.items = existing?.items ?? [];
 
 	if (Array.isArray(section.items) && typeof section.type === "string") {
-		const type = section.type as SectionType;
+		const type = section.type as CustomSectionType;
 		section.items = section.items.map((item) => normalizeItem(type, item));
 	}
 
@@ -400,10 +404,7 @@ function getValueAtPath(target: ResumePatchTarget, segments: string[], path: str
 	return current;
 }
 
-function markPatchImpact(
-	pathSegments: string[],
-	flags: { touchesCustomSections: boolean; touchesLayout: boolean },
-) {
+function markPatchImpact(pathSegments: string[], flags: { touchesCustomSections: boolean; touchesLayout: boolean }) {
 	if (pathSegments[0] === "data" && pathSegments[1] === "customSections") {
 		flags.touchesCustomSections = true;
 	}

@@ -1,7 +1,7 @@
 import { ORPCError } from "@orpc/client";
 import { createFileRoute } from "@tanstack/react-router";
-import { jsonPatchSchema } from "@/integrations/orpc/helpers/resume-patch";
 import { resolveUserFromHeaders } from "@/integrations/orpc/helpers/auth";
+import { jsonPatchSchema } from "@/integrations/orpc/helpers/resume-patch";
 import { resumeService } from "@/integrations/orpc/services/resume";
 
 function isJsonPatchContentType(contentType: string | null) {

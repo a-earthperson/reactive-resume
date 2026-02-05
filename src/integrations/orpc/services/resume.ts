@@ -10,8 +10,8 @@ import { env } from "@/utils/env";
 import type { Locale } from "@/utils/locale";
 import { hashPassword } from "@/utils/password";
 import { generateId } from "@/utils/string";
-import { applyResumePatch, type JsonPatchOp } from "../helpers/resume-patch";
 import { hasResumeAccess } from "../helpers/resume-access";
+import { applyResumePatch, type JsonPatchOp } from "../helpers/resume-patch";
 import { getStorageService } from "./storage";
 
 const tags = {
