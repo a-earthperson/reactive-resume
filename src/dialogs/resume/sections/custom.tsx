@@ -10,14 +10,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import type { DialogProps } from "@/dialogs/store";
 import { useDialogStore } from "@/dialogs/store";
-import { customSectionSchema, type SectionType } from "@/schema/resume/data";
+import { useFormBlocker } from "@/hooks/use-form-blocker";
+import { type CustomSectionType, customSectionSchema } from "@/schema/resume/data";
 import { generateId } from "@/utils/string";
 
 const formSchema = customSectionSchema;
 
 type FormValues = z.infer<typeof formSchema>;
 
-const SECTION_TYPE_OPTIONS: { value: SectionType; label: string }[] = [
+const SECTION_TYPE_OPTIONS: { value: CustomSectionType; label: string }[] = [
+	{ value: "summary", label: "Summary" },
 	{ value: "experience", label: "Experience" },
 	{ value: "education", label: "Education" },
 	{ value: "projects", label: "Projects" },
@@ -30,6 +32,7 @@ const SECTION_TYPE_OPTIONS: { value: SectionType; label: string }[] = [
 	{ value: "publications", label: "Publications" },
 	{ value: "volunteer", label: "Volunteer" },
 	{ value: "references", label: "References" },
+	{ value: "cover-letter", label: "Cover Letter" },
 ];
 
 export function CreateCustomSectionDialog({ data }: DialogProps<"resume.sections.custom.create">) {
@@ -59,8 +62,10 @@ export function CreateCustomSectionDialog({ data }: DialogProps<"resume.sections
 		closeDialog();
 	};
 
+	const { blockEvents, requestClose } = useFormBlocker(form);
+
 	return (
-		<DialogContent>
+		<DialogContent {...blockEvents}>
 			<DialogHeader>
 				<DialogTitle className="flex items-center gap-x-2">
 					<PlusIcon />
@@ -74,7 +79,7 @@ export function CreateCustomSectionDialog({ data }: DialogProps<"resume.sections
 					<CustomSectionForm />
 
 					<DialogFooter className="sm:col-span-full">
-						<Button variant="ghost" onClick={closeDialog}>
+						<Button variant="ghost" onClick={requestClose}>
 							<Trans>Cancel</Trans>
 						</Button>
 
@@ -113,8 +118,10 @@ export function UpdateCustomSectionDialog({ data }: DialogProps<"resume.sections
 		closeDialog();
 	};
 
+	const { blockEvents, requestClose } = useFormBlocker(form);
+
 	return (
-		<DialogContent>
+		<DialogContent {...blockEvents}>
 			<DialogHeader>
 				<DialogTitle className="flex items-center gap-x-2">
 					<PencilSimpleLineIcon />
@@ -128,7 +135,7 @@ export function UpdateCustomSectionDialog({ data }: DialogProps<"resume.sections
 					<CustomSectionForm isUpdate />
 
 					<DialogFooter className="sm:col-span-full">
-						<Button variant="ghost" onClick={closeDialog}>
+						<Button variant="ghost" onClick={requestClose}>
 							<Trans>Cancel</Trans>
 						</Button>
 
