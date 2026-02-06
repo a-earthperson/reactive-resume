@@ -139,6 +139,43 @@ describe("PATCH /api/resume/:id", () => {
 		expect(patchSpy).not.toHaveBeenCalled();
 	});
 
+	const invalidPatchDocs: Array<{ label: string; payload: unknown }> = [
+		{
+			label: "unknown op",
+			payload: [{ op: "merge", path: "/name", value: "Updated" }],
+		},
+		{
+			label: "missing from",
+			payload: [{ op: "move", path: "/name" }],
+		},
+		{
+			label: "empty path",
+			payload: [{ op: "add", path: "", value: "Updated" }],
+		},
+	];
+
+	test.each(invalidPatchDocs)("rejects invalid patch operations: $label", async ({ payload }) => {
+		mockAuth(mockUser);
+		const patchSpy = vi.spyOn(resumeService, "patch").mockResolvedValue(createResumeResponse());
+		const request = createJsonRequest(payload);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(400);
+		const responsePayload = await response.json();
+		expect(responsePayload.code).toBe("INVALID_PATCH");
+		expect(Array.isArray(responsePayload.issues)).toBe(true);
+		expect(patchSpy).not.toHaveBeenCalled();
+	});
+
+	test("rejects patches missing values during application", async () => {
+		mockAuth(mockUser);
+		setupPatchStore([createStoreResume()]);
+		const request = createJsonRequest([{ op: "replace", path: "/name" }]);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(400);
+		const responsePayload = await response.json();
+		expect(responsePayload.code).toBe("INVALID_PATCH");
+	});
+
 	test.each([
 		"application/json-patch+json",
 		"application/json; charset=utf-8",
@@ -172,6 +209,100 @@ describe("PATCH /api/resume/:id", () => {
 			userId: mockUser.id,
 			patch,
 		});
+	});
+
+	test("accepts empty patch documents and returns unchanged resume", async () => {
+		mockAuth(mockUser);
+		const { patchSpy } = setupPatchStore([createStoreResume()]);
+		const request = createJsonRequest([]);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(200);
+		const payload = await response.json();
+		expect(payload.name).toBe("Test Resume");
+		expect(payload.slug).toBe("test-resume");
+		expect(payload.tags).toEqual([]);
+		expect(payload.isPublic).toBe(false);
+		expect(patchSpy).toHaveBeenCalledWith({
+			id: "resume-123",
+			userId: mockUser.id,
+			patch: [],
+		});
+	});
+
+	test("updates top-level fields and tags", async () => {
+		mockAuth(mockUser);
+		const { patchSpy } = setupPatchStore([createStoreResume()]);
+		const patch = [
+			{ op: "replace", path: "/name", value: "Updated Resume" },
+			{ op: "replace", path: "/slug", value: "updated-resume" },
+			{ op: "replace", path: "/isPublic", value: true },
+			{ op: "add", path: "/tags/-", value: "frontend" },
+			{ op: "add", path: "/tags/-", value: "backend" },
+			{ op: "remove", path: "/tags/0" },
+		];
+		const request = createJsonRequest(patch);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(200);
+		const payload = await response.json();
+		expect(payload.name).toBe("Updated Resume");
+		expect(payload.slug).toBe("updated-resume");
+		expect(payload.isPublic).toBe(true);
+		expect(payload.tags).toEqual(["backend"]);
+		expect(patchSpy).toHaveBeenCalledWith({
+			id: "resume-123",
+			userId: mockUser.id,
+			patch,
+		});
+	});
+
+	test("honors test operations when values match", async () => {
+		mockAuth(mockUser);
+		setupPatchStore([createStoreResume()]);
+		const patch = [
+			{ op: "test", path: "/name", value: "Test Resume" },
+			{ op: "replace", path: "/name", value: "Updated Resume" },
+		];
+		const request = createJsonRequest(patch);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(200);
+		const payload = await response.json();
+		expect(payload.name).toBe("Updated Resume");
+	});
+
+	test("updates custom sections by id", async () => {
+		mockAuth(mockUser);
+		setupPatchStore([createStoreResume()]);
+		const createRequest = createJsonRequest([
+			{
+				op: "add",
+				path: "/data/customSections/-",
+				value: {
+					type: "skills",
+					title: "Custom Skills",
+				},
+			},
+		]);
+		const createResponse = await patchHandler({ request: createRequest, params: { id: "resume-123" } });
+		expect(createResponse.status).toBe(200);
+		const createPayload = await createResponse.json();
+		const createdSection = createPayload.data.customSections[0];
+		expect(createdSection).toBeTruthy();
+		const createdSectionId = createdSection.id as string;
+
+		const updateRequest = createJsonRequest([
+			{
+				op: "replace",
+				path: `/data/customSections/id/${createdSectionId}/title`,
+				value: "Updated Skills",
+			},
+		]);
+		const updateResponse = await patchHandler({ request: updateRequest, params: { id: "resume-123" } });
+		expect(updateResponse.status).toBe(200);
+		const updatePayload = await updateResponse.json();
+		const updatedSection = updatePayload.data.customSections.find(
+			(section: { id: string }) => section.id === createdSectionId,
+		);
+		expect(updatedSection?.title).toBe("Updated Skills");
 	});
 
 	test("returns not found when resume does not exist", async () => {
@@ -210,6 +341,48 @@ describe("PATCH /api/resume/:id", () => {
 		expect(payload.code).toBe("INVALID_PATCH_PATH");
 	});
 
+	test("rejects removing top-level fields", async () => {
+		mockAuth(mockUser);
+		setupPatchStore([createStoreResume()]);
+		const request = createJsonRequest([{ op: "remove", path: "/name" }]);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(400);
+		const payload = await response.json();
+		expect(payload.code).toBe("INVALID_PATCH_PATH");
+	});
+
+	test("rejects patch paths without a leading slash", async () => {
+		mockAuth(mockUser);
+		setupPatchStore([createStoreResume()]);
+		const request = createJsonRequest([{ op: "replace", path: "name", value: "Updated" }]);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(400);
+		const payload = await response.json();
+		expect(payload.code).toBe("INVALID_PATCH_PATH");
+	});
+
+	test("rejects patch paths with unknown section types", async () => {
+		mockAuth(mockUser);
+		setupPatchStore([createStoreResume()]);
+		const request = createJsonRequest([
+			{
+				op: "add",
+				path: "/data/sections/not-a-section/items/-",
+				value: {
+					company: "Acme Corp",
+					position: "Engineer",
+					location: "",
+					period: "",
+					description: "",
+				},
+			},
+		]);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(400);
+		const payload = await response.json();
+		expect(payload.code).toBe("INVALID_PATCH_PATH");
+	});
+
 	test("returns patch target not found errors", async () => {
 		mockAuth(mockUser);
 		setupPatchStore([createStoreResume()]);
@@ -220,6 +393,16 @@ describe("PATCH /api/resume/:id", () => {
 				value: "Lead Engineer",
 			},
 		]);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(404);
+		const payload = await response.json();
+		expect(payload.code).toBe("PATCH_TARGET_NOT_FOUND");
+	});
+
+	test("returns patch target not found for out-of-range tag removal", async () => {
+		mockAuth(mockUser);
+		setupPatchStore([createStoreResume()]);
+		const request = createJsonRequest([{ op: "remove", path: "/tags/0" }]);
 		const response = await patchHandler({ request, params: { id: "resume-123" } });
 		expect(response.status).toBe(404);
 		const payload = await response.json();
@@ -242,6 +425,19 @@ describe("PATCH /api/resume/:id", () => {
 		expect(payload.code).toBe("PATCH_CONFLICT");
 	});
 
+	test("returns invalid patch when schema validation fails", async () => {
+		mockAuth(mockUser);
+		setupPatchStore([createStoreResume()]);
+		const request = createJsonRequest([{ op: "replace", path: "/tags", value: "not-an-array" }]);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(400);
+		const payload = await response.json();
+		expect(payload.code).toBe("INVALID_PATCH");
+		expect(payload.data).toBeTruthy();
+		expect(Array.isArray(payload.data.issues)).toBe(true);
+		expect(payload.data.issues[0].path).toBe("/tags");
+	});
+
 	test("rejects patches for locked resumes", async () => {
 		mockAuth(mockUser);
 		setupPatchStore([createStoreResume({ isLocked: true })]);
@@ -250,6 +446,20 @@ describe("PATCH /api/resume/:id", () => {
 		expect(response.status).toBe(400);
 		const payload = await response.json();
 		expect(payload.code).toBe("RESUME_LOCKED");
+	});
+
+	test("propagates ORPC errors with status and data", async () => {
+		mockAuth(mockUser);
+		vi.spyOn(resumeService, "patch").mockImplementation(async () => {
+			throw new ORPCError("RESUME_SLUG_ALREADY_EXISTS", { status: 400, data: { slug: "duplicate" } });
+		});
+
+		const request = createJsonRequest([{ op: "replace", path: "/slug", value: "duplicate" }]);
+		const response = await patchHandler({ request, params: { id: "resume-123" } });
+		expect(response.status).toBe(400);
+		const payload = await response.json();
+		expect(payload.code).toBe("RESUME_SLUG_ALREADY_EXISTS");
+		expect(payload.data).toEqual({ slug: "duplicate" });
 	});
 
 	test("returns internal server errors for unexpected failures", async () => {
