@@ -52,6 +52,17 @@ const statisticsRouter = {
 		}),
 };
 
+const resumeByIdOutputSchema = z.object({
+	id: z.string(),
+	name: z.string(),
+	slug: z.string(),
+	tags: z.array(z.string()),
+	data: resumeDataSchema,
+	isPublic: z.boolean(),
+	isLocked: z.boolean(),
+	hasPassword: z.boolean(),
+});
+
 export const resumeRouter = {
 	tags: tagsRouter,
 	statistics: statisticsRouter,
@@ -104,18 +115,7 @@ export const resumeRouter = {
 			description: "Get a resume, along with its data, by its ID.",
 		})
 		.input(z.object({ id: z.string() }))
-		.output(
-			z.object({
-				id: z.string(),
-				name: z.string(),
-				slug: z.string(),
-				tags: z.array(z.string()),
-				data: resumeDataSchema,
-				isPublic: z.boolean(),
-				isLocked: z.boolean(),
-				hasPassword: z.boolean(),
-			}),
-		)
+		.output(resumeByIdOutputSchema)
 		.handler(async ({ context, input }) => {
 			return await resumeService.getById({ id: input.id, userId: context.user.id });
 		}),
@@ -233,7 +233,7 @@ export const resumeRouter = {
 				isPublic: z.boolean().optional(),
 			}),
 		)
-		.output(z.void())
+		.output(resumeByIdOutputSchema)
 		.errors({
 			RESUME_SLUG_ALREADY_EXISTS: {
 				message: "A resume with this slug already exists.",
@@ -241,7 +241,7 @@ export const resumeRouter = {
 			},
 		})
 		.handler(async ({ context, input }) => {
-			return await resumeService.update({
+			await resumeService.update({
 				id: input.id,
 				userId: context.user.id,
 				name: input.name,
@@ -250,6 +250,8 @@ export const resumeRouter = {
 				data: input.data,
 				isPublic: input.isPublic,
 			});
+
+			return await resumeService.getById({ id: input.id, userId: context.user.id });
 		}),
 
 	patch: protectedProcedure

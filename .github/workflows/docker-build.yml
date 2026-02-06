@@ -1,14 +1,14 @@
-name: Build Docker Image
+name: Publish GHCR Image
 
 on:
+  push:
+    tags:
+      - "v*.*.*"
   workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-
-env:
-  IMAGE: ${{ github.repository }}
 
 jobs:
   build:
@@ -29,8 +29,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write
-      attestations: write
 
     steps:
       - name: Checkout Repository
@@ -43,12 +41,6 @@ jobs:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -60,9 +52,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ghcr.io/${{ env.IMAGE }}
-            docker.io/${{ env.IMAGE }}
+          images: ghcr.io/${{ github.repository }}
           tags: |
             type=sha,prefix=sha-,suffix=-${{ matrix.arch }}
 
@@ -78,8 +68,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
-          cache-from: type=gha,scope=${{ env.IMAGE }}-${{ matrix.arch }}
-          cache-to: type=gha,mode=max,scope=${{ env.IMAGE }}-${{ matrix.arch }}
+          cache-from: type=gha,scope=${{ github.repository }}-${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=${{ github.repository }}-${{ matrix.arch }}
 
       - name: Export digest
         run: |
@@ -103,8 +93,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-      id-token: write
-      attestations: write
 
     steps:
       - name: Checkout Repository
@@ -112,6 +100,12 @@ jobs:
         with:
           sparse-checkout: package.json
           sparse-checkout-cone-mode: false
+          fetch-depth: 0
+
+      - name: Ensure tag is on main
+        run: |
+          git fetch origin main --unshallow || git fetch origin main
+          git merge-base --is-ancestor "${GITHUB_SHA}" "origin/main"
 
       - name: Get version from package.json
         id: version
@@ -126,12 +120,6 @@ jobs:
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -154,9 +142,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ghcr.io/${{ env.IMAGE }}
-            docker.io/${{ env.IMAGE }}
+          images: ghcr.io/${{ github.repository }}
           tags: |
             type=sha,prefix=sha-
             type=raw,value=latest
@@ -174,42 +160,19 @@ jobs:
             --annotation "index:org.opencontainers.image.licenses=MIT" \
             --annotation "index:org.opencontainers.image.title=Reactive Resume" \
             --annotation "index:org.opencontainers.image.description=A free and open-source resume builder." \
-            --annotation "index:org.opencontainers.image.vendor=Amruth Pillai" \
             --annotation "index:org.opencontainers.image.url=https://rxresu.me" \
-            --annotation "index:org.opencontainers.image.documentation=https://docs.rxresu.me" \
-            --annotation "index:org.opencontainers.image.source=https://github.com/amruthpillai/reactive-resume" \
+            --annotation "index:org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
             --annotation "index:org.opencontainers.image.version=${{ steps.version.outputs.version }}" \
-            $(printf 'ghcr.io/${{ env.IMAGE }}@sha256:%s ' *) \
-            $(printf 'docker.io/${{ env.IMAGE }}@sha256:%s ' *)
-          
-          # Get the digest of the multi-arch manifest
-          GHCR_DIGEST=$(docker buildx imagetools inspect ghcr.io/${{ env.IMAGE }}:v${{ steps.version.outputs.version }} --format '{{json .Manifest.Digest}}' | tr -d '"')
-          DOCKER_DIGEST=$(docker buildx imagetools inspect docker.io/${{ env.IMAGE }}:v${{ steps.version.outputs.version }} --format '{{json .Manifest.Digest}}' | tr -d '"')
-          echo "ghcr_digest=$GHCR_DIGEST" >> "$GITHUB_OUTPUT"
-          echo "docker_digest=$DOCKER_DIGEST" >> "$GITHUB_OUTPUT"
+            $(printf 'ghcr.io/${{ github.repository }}@sha256:%s ' *)
 
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3
-
-      - name: Sign images with Cosign
-        run: |
-          # Sign GHCR image
-          cosign sign --yes ghcr.io/${{ env.IMAGE }}@${{ steps.manifest.outputs.ghcr_digest }}
-          
-          # Sign Docker Hub image
-          cosign sign --yes docker.io/${{ env.IMAGE }}@${{ steps.manifest.outputs.docker_digest }}
-
-      - name: Inspect image
-        run: |
-          docker buildx imagetools inspect ghcr.io/${{ env.IMAGE }}:v${{ steps.version.outputs.version }}
-          docker buildx imagetools inspect docker.io/${{ env.IMAGE }}:v${{ steps.version.outputs.version }}
-
-      - name: Redeploy Stack
-        uses: appleboy/ssh-action@v1
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    needs: merge
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
         with:
-          key: ${{ secrets.SSH_KEY }}
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          script: |
-            cd docker
-            ./manage_stack.sh up reactive_resume
+          generate_release_notes: true
