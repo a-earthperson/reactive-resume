@@ -213,11 +213,6 @@ const getAuthConfig = () => {
 		plugins: [
 			apiKey({
 				enableSessionForAPIKeys: true,
-				rateLimit: {
-					enabled: true,
-					timeWindow: 1000 * 60 * 60 * 24, // 1 day
-					maxRequests: 500, // 500 requests per day
-				},
 			}),
 			username({
 				minUsernameLength: 3,
